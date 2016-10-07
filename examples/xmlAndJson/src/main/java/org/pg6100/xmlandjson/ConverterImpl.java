@@ -1,8 +1,6 @@
 package org.pg6100.xmlandjson;
 
 import com.google.gson.Gson;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -20,11 +18,11 @@ public class ConverterImpl<T> implements Converter<T> {
     private final Class<T> type;
     private final String schemaLocation;
 
-    public ConverterImpl(@NotNull Class<T> type){
+    public ConverterImpl(Class<T> type){
         this(type, null);
     }
 
-    public ConverterImpl(@NotNull Class<T> type, @Nullable String schemaLocation){
+    public ConverterImpl(Class<T> type, String schemaLocation){
         this.type = Objects.requireNonNull(type);
         this.schemaLocation = schemaLocation;
     }

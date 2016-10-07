@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<jboss-web>
+    <context-root>/soap_wm</context-root>
+</jboss-web>

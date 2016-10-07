@@ -2,8 +2,11 @@ package org.pg6100.utils.web;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +66,7 @@ public class WebTestBase {
     }
 
     @BeforeClass
-    public static void init() throws InterruptedException {
+    public static void initDriver() throws InterruptedException {
 
         driver = getChromeDriver();
 
@@ -88,13 +91,20 @@ public class WebTestBase {
         return "foo" + counter.incrementAndGet();
     }
 
-    protected static String getUniqueTitle() {
-        return "A title: " + counter.incrementAndGet();
-    }
-
 
     @AfterClass
-    public static void tearDown() {
+    public static void stopDriver() {
         driver.close();
+    }
+
+    protected Boolean waitForPageToLoad() {
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        WebDriverWait wait = new WebDriverWait(driver, 10); //give up after 10 seconds
+
+        //keep executing the given JS till it returns "true", when page is fully loaded and ready
+        return wait.until((ExpectedCondition<Boolean>) input -> {
+            String res = jsExecutor.executeScript("return /loaded|complete/.test(document.readyState);").toString();
+            return Boolean.parseBoolean(res);
+        });
     }
 }
