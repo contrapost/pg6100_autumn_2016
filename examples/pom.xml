@@ -12,6 +12,7 @@
     <modules>
         <module>xmlAndJson</module>
         <module>soap</module>
+        <module>rest</module>
         <module>utils</module>
     </modules>
 
@@ -19,11 +20,17 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- Internal modules used by other modules -->
             <dependency>
                 <groupId>org.pg6100</groupId>
                 <artifactId>utils</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.pg6100</groupId>
+                <artifactId>xmlAndJson</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
 
@@ -72,12 +79,17 @@
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.6.2</version>
+                <version>2.7</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
-                <version>3.0.16.Final</version>
+                <version>3.1.0.CR2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
             </dependency>
 
         </dependencies>
