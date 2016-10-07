@@ -11,6 +11,7 @@
 
     <modules>
         <module>xmlAndJson</module>
+        <module>soap</module>
     </modules>
 
 
