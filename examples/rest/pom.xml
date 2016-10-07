@@ -14,6 +14,7 @@
 
     <modules>
         <module>weather_client</module>
+        <module>restweb</module>
     </modules>
 
 
