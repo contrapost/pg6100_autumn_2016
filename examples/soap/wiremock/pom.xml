@@ -81,6 +81,22 @@
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>init</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                            <goal>deploy</goal>
+                        </goals>
+                        <configuration>
+                            <javaOpts>
+                                <!-- Make it point to WireMock -->
+                                <javaOpt>-DnasdaqAddress=localhost:8099</javaOpt>
+                            </javaOpts>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
