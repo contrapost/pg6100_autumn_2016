@@ -19,7 +19,7 @@ public class WundergroundMain {
         //http://api.wunderground.com/api/302f56c7ad8e8c82/geolookup/conditions/forecast/q/Norway/Oslo.xml
 
         /*
-            Need to register. Linked to a a user.
+            Need to register. Linked to a user.
             Up to 500 calls per day, 10 per minute.
             To have more, you need to pay.
          */

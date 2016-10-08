@@ -14,7 +14,19 @@
         <module>soap</module>
         <module>rest</module>
         <module>utils</module>
+        <module>news</module>
     </modules>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hibernate.version>5.2.2.Final</hibernate.version>
+        <wildfly.version>10.1.0.Final</wildfly.version>
+        <jbossTarget>${basedir}/target/downloaded_Wildfly</jbossTarget>
+        <jbossHome>${jbossTarget}/wildfly-${wildfly.version}</jbossHome>
+        <version.jacoco>0.7.7.201606060606</version.jacoco>
+        <fs>${file.separator}</fs>
+    </properties>
 
 
     <dependencyManagement>
@@ -56,6 +68,33 @@
             </dependency>
 
 
+            <!-- JPA / Hibernate / Database -->
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.1-api</artifactId>
+                <version>1.0.0.Final</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.192</version>
+                <scope>provided</scope>
+            </dependency>
+
+
             <!-- test dependencies -->
             <dependency>
                 <groupId>junit</groupId>
@@ -74,6 +113,32 @@
                 <artifactId>wiremock</artifactId>
                 <version>2.2.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.1.11.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>1.1.0.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-jacoco</artifactId>
+                <version>1.0.0.Alpha8</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.core</artifactId>
+                <version>${version.jacoco}</version>
+                <scope>test</scope>
+            </dependency>
+
 
             <!-- Misc -->
             <dependency>
@@ -136,6 +201,33 @@
                                 <goal>integration-test</goal>
                                 <goal>verify</goal>
                             </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>unpack</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.wildfly</groupId>
+                                        <artifactId>wildfly-dist</artifactId>
+                                        <version>${wildfly.version}</version>
+                                        <type>zip</type>
+                                        <overWrite>false</overWrite>
+                                        <outputDirectory>${jbossTarget}</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
