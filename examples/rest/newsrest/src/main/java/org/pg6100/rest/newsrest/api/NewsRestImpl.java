@@ -2,7 +2,7 @@ package org.pg6100.rest.newsrest.api;
 
 import com.google.common.base.Throwables;
 import org.pg6100.news.NewsEJB;
-import org.pg6100.news.country.CountryList;
+import org.pg6100.news.constraint.CountryList;
 import org.pg6100.rest.newsrest.dto.NewsConverter;
 import org.pg6100.rest.newsrest.dto.NewsDto;
 
@@ -29,8 +29,6 @@ public class NewsRestImpl implements NewsRestApi{
 
     @Override
     public List<NewsDto> getByCountry(String country) {
-
-        validateCountry(country);
         return NewsConverter.transform(ejb.getAllByCountry(country));
     }
 
@@ -43,8 +41,6 @@ public class NewsRestImpl implements NewsRestApi{
 
     @Override
     public List<NewsDto> getByCountryAndAuthor(String country, String author) {
-
-        validateCountry(country);
         return NewsConverter.transform(ejb.getAllByCountryAndAuthor(country, author));
     }
 
@@ -89,12 +85,6 @@ public class NewsRestImpl implements NewsRestApi{
 
 
     //----------------------------------------------------------
-
-    private void validateCountry(String country) throws WebApplicationException{
-        if(!CountryList.isValidCountry(country)){
-            throw new WebApplicationException("Invalid country: "+country, 400);
-        }
-    }
 
     private WebApplicationException wrapException(Exception e) throws WebApplicationException{
         Throwable cause = Throwables.getRootCause(e);

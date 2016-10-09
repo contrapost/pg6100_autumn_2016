@@ -1,6 +1,6 @@
 package org.pg6100.rest.newsrest.api;
 
-import org.pg6100.news.country.CountryList;
+import org.pg6100.news.constraint.CountryList;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

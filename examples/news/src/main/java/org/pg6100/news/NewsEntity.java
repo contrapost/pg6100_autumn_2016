@@ -2,13 +2,12 @@ package org.pg6100.news;
 
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.pg6100.news.country.Country;
+import org.pg6100.news.constraint.Country;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 

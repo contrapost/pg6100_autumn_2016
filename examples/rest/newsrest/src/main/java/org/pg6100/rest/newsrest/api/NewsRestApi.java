@@ -1,5 +1,6 @@
 package org.pg6100.rest.newsrest.api;
 
+import org.pg6100.news.constraint.Country;
 import org.pg6100.rest.newsrest.dto.NewsDto;
 
 import javax.ws.rs.*;
@@ -15,7 +16,7 @@ public interface NewsRestApi {
 
     @GET
     @Path("/countries/{country}")
-    List<NewsDto> getByCountry(@PathParam("country") String country);
+    List<NewsDto> getByCountry(@PathParam("country") @Country String country);
 
 
     @GET
@@ -25,7 +26,7 @@ public interface NewsRestApi {
     @GET
     @Path("/countries/{country}/authors/{author}")
     List<NewsDto> getByCountryAndAuthor(
-            @PathParam("country") String country,
+            @PathParam("country") @Country String country,
             @PathParam("author") String author);
 
     @POST

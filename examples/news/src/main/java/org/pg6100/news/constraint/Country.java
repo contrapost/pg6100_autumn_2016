@@ -1,4 +1,4 @@
-package org.pg6100.news.country;
+package org.pg6100.news.constraint;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 @Target({  //tells on what the @ annotation can be used
         ElementType.FIELD,
         ElementType.METHOD,
+        ElementType.PARAMETER,
         ElementType.ANNOTATION_TYPE}
 )
 @Retention(RetentionPolicy.RUNTIME) //specify it should end up in the bytecode and be readable using reflection

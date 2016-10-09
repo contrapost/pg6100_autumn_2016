@@ -1,11 +1,10 @@
-package org.pg6100.news.country;
+package org.pg6100.news.constraint;
 
 import com.google.common.io.Resources;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
