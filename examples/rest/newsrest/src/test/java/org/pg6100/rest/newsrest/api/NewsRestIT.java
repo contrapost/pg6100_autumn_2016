@@ -131,6 +131,23 @@ public class NewsRestIT {
         get("/id/" + id).then().body("text", is(updatedText));
     }
 
+    @Test
+    public void testInvalidUpdate() {
+
+        String id = given().contentType(ContentType.JSON)
+                .body(new NewsDto(null, "author", "someText", "Norway", null))
+                .post()
+                .then()
+                .extract().asString();
+
+        String updatedText = "";
+
+        given().contentType(ContentType.JSON)
+                .body(new NewsDto(id, null, updatedText, null, null))
+                .put()
+                .then()
+                .statusCode(400);
+    }
 
     private void createSomeNews() {
         createNews("a", "text", "Norway");
@@ -198,32 +215,61 @@ public class NewsRestIT {
     }
 
     @Test
-    public void testInvalidAuthor() {
-//        try {
-//            ejb.createNews("", "text", "Norway");
-//        } catch (EJBException e) {
-//            Throwable cause = Throwables.getRootCause(e);
-//            assertTrue("Cause: " + cause, cause instanceof ConstraintViolationException);
-//        }
+    public void testInvalidGetByCountry() {
+
+        get("/countries/foo").then().statusCode(400);
     }
 
     @Test
-    public void testInvalidText() {
-//        try {
-//            ejb.createNews("author", "", "Norway");
-//        } catch (EJBException e) {
-//            Throwable cause = Throwables.getRootCause(e);
-//            assertTrue("Cause: " + cause, cause instanceof ConstraintViolationException);
-//        }
+    public void testInvalidGetByCountryAndAuthor() {
+
+        get("/countries/foo/authors/foo").then().statusCode(400);
+    }
+
+
+    @Test
+    public void testInvalidAuthor() {
+
+        given().contentType(ContentType.JSON)
+                .body(new NewsDto(null, "", "text", "Norway", null))
+                .post()
+                .then()
+                .statusCode(400);
     }
 
     @Test
     public void testInvalidCountry() {
-//        try {
-//            ejb.createNews("author", "text", "Foo");
-//        } catch (EJBException e) {
-//            Throwable cause = Throwables.getRootCause(e);
-//            assertTrue("Cause: " + cause, cause instanceof ConstraintViolationException);
-//        }
+
+        given().contentType(ContentType.JSON)
+                .body(new NewsDto(null, "author", "text", "foo", null))
+                .post()
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testPostWithId() {
+        given().contentType(ContentType.JSON)
+                .body(new NewsDto("1", "author", "text", "Norway", null))
+                .post()
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testPostWithWrongType() {
+        given().contentType(ContentType.XML)
+                .body("<foo></foo>")
+                .post()
+                .then()
+                .statusCode(415);
+    }
+
+
+    @Test
+    public void testGetByInvalidId() {
+        get("/id/foo")
+                .then()
+                .statusCode(404);
     }
 }
