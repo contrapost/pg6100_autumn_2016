@@ -44,4 +44,20 @@ public class JBossUtil {
             return false;
         }
     }
+
+    public static void waitForJBoss(int seconds){
+        for (int i = 0; i < seconds; i++) {
+            boolean ready = isJBossUpAndRunning();
+            if (!ready) {
+                try {
+                    Thread.sleep(1_000); //check every second
+                } catch (InterruptedException e) {
+                    return;
+                }
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
 }

@@ -1,8 +1,8 @@
 package org.pg6100.rest.restweb;
 
 
+import javax.ejb.EJB;
 import javax.faces.bean.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @RequestScoped
 public class JsfBean {
 
-    @Inject
+    @EJB
     private LocationProvider locationProvider;
 
     public List<Location> getLocations(){

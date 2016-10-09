@@ -75,16 +75,7 @@ public class WebTestBase {
             that WildFly is not ready yet, although it was started. So
             we need to wait till it is ready.
          */
-        for (int i = 0; i < 30; i++) {
-            boolean ready = JBossUtil.isJBossUpAndRunning();
-            if (!ready) {
-                Thread.sleep(1_000); //check every second
-                continue;
-            } else {
-                break;
-            }
-        }
-
+        JBossUtil.waitForJBoss(30);
     }
 
     protected static String getUniqueId() {

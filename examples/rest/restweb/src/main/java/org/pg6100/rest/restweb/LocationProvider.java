@@ -1,6 +1,6 @@
 package org.pg6100.rest.restweb;
 
-import javax.inject.Singleton;
+import javax.ejb.Singleton;
 import java.util.Arrays;
 import java.util.List;
 

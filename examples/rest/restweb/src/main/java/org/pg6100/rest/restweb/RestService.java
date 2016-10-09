@@ -2,8 +2,8 @@ package org.pg6100.rest.restweb;
 
 import com.google.gson.Gson;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,7 +15,7 @@ import java.util.List;
 @Path("/locations")
 public class RestService {
 
-    @Inject
+    @EJB
     private LocationProvider locationProvider;
 
     @GET

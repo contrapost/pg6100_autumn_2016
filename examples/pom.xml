@@ -44,6 +44,11 @@
                 <artifactId>xmlAndJson</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.pg6100</groupId>
+                <artifactId>news</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 
             <!-- JEE -->
@@ -138,6 +143,11 @@
                 <version>${version.jacoco}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>3.0.1</version>
+            </dependency>
 
 
             <!-- Misc -->
@@ -150,6 +160,11 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
                 <version>3.1.0.CR2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.2</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -187,6 +202,19 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+
+                <!--
+                  Avoid failing War generation if web.xml is missing, as we ll not
+                  use it in some example modules
+              -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
                 </plugin>
 
                 <plugin>
