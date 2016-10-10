@@ -1,5 +1,7 @@
 package org.pg6100.rest.newsrest.api;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.pg6100.news.constraint.Country;
 import org.pg6100.rest.newsrest.dto.NewsDto;
 
@@ -7,10 +9,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("news")
+@Api(value = "/news" , description = "Handling of creating and retrieving news")
+@Path("/news")
 @Produces(MediaType.APPLICATION_JSON)
 public interface NewsRestApi {
 
+    @ApiOperation("Get all the news")
     @GET
     List<NewsDto> get();
 

@@ -26,6 +26,7 @@
         <jbossHome>${jbossTarget}/wildfly-${wildfly.version}</jbossHome>
         <version.jacoco>0.7.7.201606060606</version.jacoco>
         <fs>${file.separator}</fs>
+        <swagger-version>1.5.10</swagger-version>
     </properties>
 
 
@@ -151,6 +152,16 @@
 
 
             <!-- Misc -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>${swagger-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-hibernate-validations</artifactId>
+                <version>${swagger-version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
