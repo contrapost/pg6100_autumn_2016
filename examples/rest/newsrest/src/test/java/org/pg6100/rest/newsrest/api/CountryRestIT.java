@@ -59,7 +59,7 @@ public class CountryRestIT {
     @Test
     public void testWithRawTcp() throws Exception {
 
-        String request = "GET /newsrest/api/country HTTP/1.1 \n";
+        String request = "GET /newsrest/api/countries HTTP/1.1 \n";
         request += "Host:localhost \n";
         request += "Accept:application/json \n";
         request += "\n";
@@ -77,7 +77,7 @@ public class CountryRestIT {
     public void testWithApacheHttpClient() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpGet httpGet = new HttpGet("http://localhost:8080/newsrest/api/country");
+        HttpGet httpGet = new HttpGet("http://localhost:8080/newsrest/api/countries");
         httpGet.addHeader("Accept", "application/json");
 
         HttpResponse response = httpclient.execute(httpGet);
@@ -97,7 +97,7 @@ public class CountryRestIT {
 
     @Test
     public void testWithRestEasy() {
-        URI uri = UriBuilder.fromUri("http://localhost/newsrest/api/country").port(8080).build();
+        URI uri = UriBuilder.fromUri("http://localhost/newsrest/api/countries").port(8080).build();
         Client client = ClientBuilder.newClient();
 
         Response response = client.target(uri).request("application/json").get();
@@ -119,7 +119,7 @@ public class CountryRestIT {
 
         given().accept(ContentType.JSON)
                 .and()
-                .get("http://localhost:8080/newsrest/api/country")
+                .get("http://localhost:8080/newsrest/api/countries")
                 .then()
                 .statusCode(200)
                 .body("size()", is(greaterThan(200)))
