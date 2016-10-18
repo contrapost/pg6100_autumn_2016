@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.pg6100.utils.web.HttpUtil;
 import org.pg6100.utils.web.JBossUtil;
 
 import javax.ws.rs.client.Client;
@@ -36,25 +37,6 @@ public class CountryRestIT {
     }
 
 
-    private String executeHttpCommand(String host, int port, String request) throws Exception {
-
-        try (Socket socket = new Socket(host, port)) {
-            socket.getOutputStream().write(request.getBytes());
-            socket.shutdownOutput();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-
-            String response = "";
-            String line = in.readLine();
-
-            while (line != null) {
-                response += line + "\n";
-                line = in.readLine();
-            }
-            return response;
-        }
-    }
 
     @Test
     public void testWithRawTcp() throws Exception {
@@ -64,13 +46,19 @@ public class CountryRestIT {
         request += "Accept:application/json \n";
         request += "\n";
 
-        String result = executeHttpCommand("localhost", 8080, request);
+        String result = HttpUtil.executeHttpCommand("localhost", 8080, request);
         System.out.println(result);
 
-        assertTrue(result.contains("200 OK"));
-        assertTrue(result.contains("Norway"));
-        assertTrue(result.contains("Sweden"));
-        assertTrue(result.contains("Germany"));
+        String headers = HttpUtil.getHeaderBlock(result);
+        assertTrue(headers.contains("200 OK"));
+
+        String contentType = HttpUtil.getHeaderValue("Content-Type", result);
+        assertTrue(contentType.contains("application/json"));
+
+        String body = HttpUtil.getBodyBlock(result);
+        assertTrue(body.contains("Norway"));
+        assertTrue(body.contains("Sweden"));
+        assertTrue(body.contains("Germany"));
     }
 
     @Test
