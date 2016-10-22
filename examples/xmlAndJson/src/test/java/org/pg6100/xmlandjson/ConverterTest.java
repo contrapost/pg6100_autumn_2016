@@ -145,6 +145,22 @@ public class ConverterTest {
     }
 
 
+    @Test
+    public void testCustomJson(){
+
+        Converter<TopPosts> converter = new ConverterCustomJson<TopPosts>(TopPosts.class);
+        TopPosts topPosts = getTopPosts();
+
+        String custom = converter.toJSon(topPosts);
+        System.out.println("Custom JSON:\n" + custom);
+
+        TopPosts backWithGson = converter.fromJSon(custom);
+
+        verifyEquivalence(topPosts, backWithGson);
+    }
+
+
+
     private void verifyEquivalence(TopPosts a, TopPosts b) {
 
         assertNotNull(a);

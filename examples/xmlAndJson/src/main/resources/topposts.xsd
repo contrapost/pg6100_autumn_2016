@@ -22,6 +22,14 @@ Java class can be automatically generated from the XSD, eg select schema and use
 JAXB tools. See results in "automated" package.
 However, if @XmlRootElement is missing, add it manually to the generated files
 
+
+WHY is this very useful?
+You can write your Java code, and extract the schema automatically.
+Then, you can distribute the schema to your clients.
+If a client is using C# or Python (for example), then they can use their
+tools to automatically generate C#/Python object code for automatically
+(un)marshalling the XML
+
 -->
 
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
