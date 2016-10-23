@@ -15,6 +15,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.Assert.fail;
 
+/**
+ * Same from PG5100
+ */
 public class WebTestBase {
 
     private static final AtomicLong counter = new AtomicLong(System.currentTimeMillis());

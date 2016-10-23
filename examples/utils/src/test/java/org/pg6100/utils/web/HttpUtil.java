@@ -5,8 +5,17 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Objects;
 
+/**
+ * Class with methods to do low-level HTTP communications using raw TCP sockets.
+ * Not something you should use, but just to understand what HTTP communications
+ * actually are.
+ */
 public class HttpUtil {
 
+    /**
+        Connect to given host:port via direct TCP socket, send the input string, and
+        return the result (if any) as a string
+     */
     public static String executeHttpCommand(String host, int port, String request) throws Exception {
         Objects.requireNonNull(host);
         Objects.requireNonNull(request);
@@ -29,6 +38,12 @@ public class HttpUtil {
         }
     }
 
+    /**
+     * Get the heards in the HTTP message
+     *
+     * @param message
+     * @return
+     */
     public static String getHeaderBlock(String message){
         Objects.requireNonNull(message);
 
@@ -36,6 +51,7 @@ public class HttpUtil {
         String headers = "";
         for(int i=0; i<lines.length; i++){
             if(lines[i].isEmpty()){
+                //empty line defines the end of the header section
                 break;
             }
             headers += lines[i] + "\n";
@@ -43,6 +59,13 @@ public class HttpUtil {
         return headers;
     }
 
+    /**
+     * Get the body of the HTTP message (if any).
+     * Body block comes after the headers
+     *
+     * @param message
+     * @return
+     */
     public static String getBodyBlock(String message){
         Objects.requireNonNull(message);
 
@@ -61,6 +84,12 @@ public class HttpUtil {
         return body;
     }
 
+    /**
+     *
+     * @param name the name of the header, eg "Content-Type"
+     * @param message
+     * @return {@code null} if the header is not present, otherwise its value as string
+     */
     public static String getHeaderValue(String name, String message){
         Objects.requireNonNull(name);
         Objects.requireNonNull(message);

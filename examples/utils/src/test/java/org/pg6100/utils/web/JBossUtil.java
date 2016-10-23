@@ -19,6 +19,9 @@ import javax.ws.rs.core.Response;
  * Taken and adapted from:
  *
  * https://antoniogoncalves.org/2014/07/20/your-tests-assume-that-jboss-is-up-and-running/
+ *
+ *
+ * Same as in PG5100
  */
 public class JBossUtil {
 
@@ -37,9 +40,19 @@ public class JBossUtil {
     public static boolean isJBossUpAndRunning() {
 
         try {
-            WebTarget target = getClient().target("http://localhost:9990/management").queryParam("operation", "attribute").queryParam("name", "server-state");
+            /*
+                Note: here the managment interface of Wildfly is acting as a RESTful server, where the
+                status of Wildfly is returned with JSon after a HTTP GET.
+             */
+            WebTarget target = getClient()
+                    .target("http://localhost:9990/management")
+                    .queryParam("operation", "attribute")
+                    .queryParam("name", "server-state");
+
             Response response = target.request(MediaType.APPLICATION_JSON).get();
+
             return response.getStatus() == Response.Status.OK.getStatusCode() && response.readEntity(String.class).contains("running");
+
         } catch (Exception e){
             return false;
         }

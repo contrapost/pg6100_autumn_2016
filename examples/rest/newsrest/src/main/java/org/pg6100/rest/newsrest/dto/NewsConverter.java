@@ -6,6 +6,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+/*
+    It might be tempting to use the @Entity objects directly as DTOs.
+    That would be WRONG!!!
+    It might work for small applications developed by one single person,
+    but it is a huge problem (eg, maintainability and de-coupling) for
+    larger projects.
+
+    So here we need a converter from @Entity to DTO
+ */
 public class NewsConverter {
 
     private NewsConverter(){}

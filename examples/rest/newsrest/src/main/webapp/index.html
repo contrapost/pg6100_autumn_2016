@@ -37,6 +37,7 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
+        // NOTE: changed this URL to point to the swagger.json provided by our REST service
         url = "http://localhost:8080/newsrest/api/swagger.json";
       }
 

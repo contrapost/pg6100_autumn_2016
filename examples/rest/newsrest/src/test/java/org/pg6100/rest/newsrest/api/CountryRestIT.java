@@ -29,6 +29,9 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
+/*
+    Need to run it as an integration test (IT) as we need Wildfly up and running
+ */
 public class CountryRestIT {
 
     @BeforeClass
@@ -40,6 +43,12 @@ public class CountryRestIT {
 
     @Test
     public void testWithRawTcp() throws Exception {
+
+        /*
+            Here we build a "raw" HTTP request to get the list of countries,
+            and do it by using low level TCP connections.
+            Note: this is only for didactic purposes
+         */
 
         String request = "GET /newsrest/api/countries HTTP/1.1 \n";
         request += "Host:localhost \n";
@@ -63,6 +72,13 @@ public class CountryRestIT {
 
     @Test
     public void testWithApacheHttpClient() throws Exception {
+
+        /*
+            There are libraries to simplify the use of HTTP.
+            The most popular is Apache HttpClient.
+            Note: this is a generic HTTP library, and not specific for REST
+         */
+
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         HttpGet httpGet = new HttpGet("http://localhost:8080/newsrest/api/countries");
@@ -81,11 +97,23 @@ public class CountryRestIT {
         assertTrue(countries.contains("Norway"));
         assertTrue(countries.contains("Sweden"));
         assertTrue(countries.contains("Germany"));
+
+        httpGet.releaseConnection();
     }
 
     @Test
     public void testWithRestEasy() {
-        URI uri = UriBuilder.fromUri("http://localhost/newsrest/api/countries").port(8080).build();
+
+        /*
+            If you are dealing with REST, you might want to use a library that is
+            specific for REST, like RestEasy.
+            Note: this is the same library used internally in Wildfly to create
+            REST services (ie, an implementation of JAX-RS).
+         */
+
+        URI uri = UriBuilder.fromUri("http://localhost/newsrest/api/countries")
+                .port(8080)
+                .build();
         Client client = ClientBuilder.newClient();
 
         Response response = client.target(uri).request("application/json").get();
@@ -105,11 +133,23 @@ public class CountryRestIT {
     @Test
     public void testWithRestAssured() {
 
+        /*
+            If your goal is testing REST API, there are libraries that
+            are specialized in it. One is RestAssured.
+            You can compare the code beneath with the other tests,
+            and decide which is the easiest to read.
+
+            One good thing of RestAssured is the ability to define
+            assertions on the JSon responses in the body without
+            having to manually parsing (or unmarshalling) it first.
+         */
+
         given().accept(ContentType.JSON)
                 .and()
                 .get("http://localhost:8080/newsrest/api/countries")
                 .then()
                 .statusCode(200)
+                .and()
                 .body("size()", is(greaterThan(200)))
                 .body(containsString("Norway"))
                 .body(containsString("Sweden"))

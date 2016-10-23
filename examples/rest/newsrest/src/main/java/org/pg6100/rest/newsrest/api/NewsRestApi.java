@@ -9,10 +9,36 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+/*
+    When defining a REST API, there is going to be a lot of annotations that
+    are required. To make things more readable, it is a good practice to
+    have the API definition (with all the annotations) in an interface,
+    and the actual internal logic in a concrete class.
+ */
+
+
 @Api(value = "/news" , description = "Handling of creating and retrieving news")
+// when the url is "<base>/news", then this class will be used to handle it
 @Path("/news")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON) // states that, when a method returns something, it is in Json
 public interface NewsRestApi {
+
+    /*
+        Main HTTP verbs/methods:
+        GET: get the resource specified in the URL
+        POST: send data, creating a new resource
+        PUT: update a resource
+        DELETE: delete the resource
+     */
+
+    /*
+        Note: here inputs (what is in the method parameters) and outputs will
+        be automatically processed by Wildfly using its own Json library, eg Jackson.
+        So, when we have
+        "List<NewsDto>"
+        as return value, Wildfly will automatically marshall it into Json
+     */
+
 
     @ApiOperation("Get all the news")
     @GET

@@ -25,10 +25,23 @@ public class MetNoMain {
 
     public static void main(String[] args){
 
+        /*
+            We use JAX-RS to access/create RESTful web services.
+
+            REST =  Representational State Transfer
+
+            JAX-RS is just a spec. Different implementations are for example
+            RestEasy (from JBoss/Wildfly) and Jersey.
+            This is the same concept of Hibernate being just an implementation of JPA.
+         */
+
 
         //http://api.met.no/weatherapi/textforecast/1.6/?forecast=land;language=nb
-        URI uri = UriBuilder.fromUri("http://api.met.no/weatherapi/textforecast/1.6").port(80)
-                .queryParam("forecast","land").queryParam("language","nb").build();
+        URI uri = UriBuilder.fromUri("http://api.met.no/weatherapi/textforecast/1.6")
+                .port(80) // not necessary, as 80 is default anywat
+                .queryParam("forecast","land") // equivalent to "?forecast=land"
+                .queryParam("language","nb")   // equivalent to "&language=nb"
+                .build();
 
         Client client = ClientBuilder.newClient();
         Response response = client.target(uri).request("application/xml").get();

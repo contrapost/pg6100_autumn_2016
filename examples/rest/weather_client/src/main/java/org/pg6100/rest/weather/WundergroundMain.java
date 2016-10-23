@@ -28,7 +28,11 @@ public class WundergroundMain {
         String city = "Oslo";
 
         //parameters passed as path elements, and a not as "?name=value" parameters
-        URI uri = UriBuilder.fromUri("http://api.wunderground.com/api/"+code+"/geolookup/conditions/forecast/q/"+country+"/"+city+".json").port(80).build();
+        URI uri = UriBuilder
+                .fromUri("http://api.wunderground.com/api/"
+                        + code +"/geolookup/conditions/forecast/q/"+country+"/"+city+".json")
+                .port(80)
+                .build();
 
         Client client = ClientBuilder.newClient();
         Response response = client.target(uri).request("application/json").get();

@@ -19,6 +19,10 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
 
+/*
+    Unless otherwise specified, you will have to write tests
+    for REST APIs using RestAssured
+ */
 public class NewsRestIT {
 
     private static final Gson gson = new Gson();
@@ -27,6 +31,7 @@ public class NewsRestIT {
     public static void initClass() {
         JBossUtil.waitForJBoss(10);
 
+        // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
         RestAssured.basePath = "/newsrest/api/news";
@@ -38,17 +43,29 @@ public class NewsRestIT {
     @After
     public void clean() {
 
+        /*
+           Recall, as Wildfly is running as a separated process, changed
+           in the database will impact all the tests.
+           Here, we read each resource (GET), and then delete them
+           one by one (DELETE)
+         */
         String body = given().accept(ContentType.JSON).get()
                 .then()
                 .statusCode(200)
                 .extract().asString();
         List<NewsDto> list = Arrays.asList(gson.fromJson(body, NewsDto[].class));
 
+
+        /*
+            Code 204: "No Content". The server has successfully processed the request,
+            but the return HTTP response will have no body.
+         */
         list.stream().forEach(dto ->
                 given().pathParam("id", dto.id).delete("/id/{id}").then().statusCode(204));
 
         get().then().statusCode(200).body("size()", is(0));
     }
+
 
     @Test
     public void testCleanDB() {
@@ -258,6 +275,17 @@ public class NewsRestIT {
 
     @Test
     public void testPostWithWrongType() {
+
+        /*
+            HTTP Error 415: "Unsupported media type"
+            The REST API is set to return data in JSon, ie
+            @Produces(MediaType.APPLICATION_JSON)
+            so, if ask for XML, we should get a 415 error.
+            Note: a server might provide the same resource (on same URL)
+            with different formats!
+            Although nowadays most just deal with Json.
+         */
+
         given().contentType(ContentType.XML)
                 .body("<foo></foo>")
                 .post()
@@ -268,6 +296,13 @@ public class NewsRestIT {
 
     @Test
     public void testGetByInvalidId() {
+
+        /*
+            In this particular case, "foo" might be a valid id.
+            however, as it is not in the database, and there is no mapping
+            for a String id, the server will say "Not Found", ie 404.
+         */
+
         get("/id/foo")
                 .then()
                 .statusCode(404);
