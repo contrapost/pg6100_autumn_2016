@@ -50,10 +50,11 @@ public class CountryRestIT {
             Note: this is only for didactic purposes
          */
 
+        // "verb" (GET in this case), followed by " ", then the path to resource, " ", and finally the protocol
         String request = "GET /newsrest/api/countries HTTP/1.1 \n";
-        request += "Host:localhost \n";
-        request += "Accept:application/json \n";
-        request += "\n";
+        request += "Host:localhost \n";  //this is compulsory: a server running at an IP can serve different host names
+        request += "Accept:application/json \n"; //we states that we want the resouce in Json format
+        request += "\n"; //empty line indicates the end of the header section
 
         String result = HttpUtil.executeHttpCommand("localhost", 8080, request);
         System.out.println(result);
