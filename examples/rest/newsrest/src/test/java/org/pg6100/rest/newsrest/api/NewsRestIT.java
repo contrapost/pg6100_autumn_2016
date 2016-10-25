@@ -23,48 +23,7 @@ import static org.hamcrest.core.Is.is;
     Unless otherwise specified, you will have to write tests
     for REST APIs using RestAssured
  */
-public class NewsRestIT {
-
-    private static final Gson gson = new Gson();
-
-    @BeforeClass
-    public static void initClass() {
-        JBossUtil.waitForJBoss(10);
-
-        // RestAssured configs shared by all the tests
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8080;
-        RestAssured.basePath = "/newsrest/api/news";
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-
-    @Before
-    @After
-    public void clean() {
-
-        /*
-           Recall, as Wildfly is running as a separated process, changed
-           in the database will impact all the tests.
-           Here, we read each resource (GET), and then delete them
-           one by one (DELETE)
-         */
-        String body = given().accept(ContentType.JSON).get()
-                .then()
-                .statusCode(200)
-                .extract().asString();
-        List<NewsDto> list = Arrays.asList(gson.fromJson(body, NewsDto[].class));
-
-
-        /*
-            Code 204: "No Content". The server has successfully processed the request,
-            but the return HTTP response will have no body.
-         */
-        list.stream().forEach(dto ->
-                given().pathParam("id", dto.id).delete("/id/{id}").then().statusCode(204));
-
-        get().then().statusCode(200).body("size()", is(0));
-    }
+public class NewsRestIT extends NewsRestTestBase{
 
 
     @Test
