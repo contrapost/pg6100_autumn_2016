@@ -128,6 +128,7 @@ public class NewsRestIT {
 
         String text = "someText";
 
+        //first create with a POST
         String id = given().contentType(ContentType.JSON)
                 .body(new NewsDto(null, "author", text, "Norway", null))
                 .post()
@@ -135,18 +136,46 @@ public class NewsRestIT {
                 .statusCode(200)
                 .extract().asString();
 
+        //check if POST was fine
         get("/id/" + id).then().body("text", is(text));
 
         String updatedText = "new updated text";
 
+        //now change text with PUT
         given().contentType(ContentType.JSON)
                 .body(new NewsDto(id, null, updatedText, null, null))
                 .put()
                 .then()
                 .statusCode(204);
 
+        //was the PUT fine?
         get("/id/" + id).then().body("text", is(updatedText));
+
+
+        //now rechange, but using different API
+        String anotherText = "yet another text";
+
+        given().contentType(ContentType.TEXT)
+                .body(anotherText)
+                .pathParam("id", id)
+                .put("/id/{id}")
+                .then()
+                .statusCode(204);
+
+        get("/id/" + id).then().body("text", is(anotherText));
     }
+
+    @Test
+    public void testMissingForUpdate(){
+
+        given().contentType(ContentType.TEXT)
+                .body("some text")
+                .pathParam("id", "-333")
+                .put("/id/{id}")
+                .then()
+                .statusCode(404);
+    }
+
 
     @Test
     public void testInvalidUpdate() {

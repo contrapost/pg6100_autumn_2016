@@ -2,6 +2,8 @@ package org.pg6100.rest.newsrest.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
 import org.pg6100.news.constraint.Country;
 import org.pg6100.rest.newsrest.dto.NewsDto;
 
@@ -39,39 +41,92 @@ public interface NewsRestApi {
         as return value, Wildfly will automatically marshall it into Json
      */
 
+    //note: in interfaces, this is by default "public static final"
+    String ID_PARAM ="The numeric id of the news";
+
 
     @ApiOperation("Get all the news")
     @GET
     List<NewsDto> get();
 
+    @ApiOperation("Get all the news in the specified country")
     @GET
     @Path("/countries/{country}")
-    List<NewsDto> getByCountry(@PathParam("country") @Country String country);
+    List<NewsDto> getByCountry(
+            @ApiParam("The country name")
+            @PathParam("country")
+            @Country String country);
 
 
+    @ApiOperation("Get all the news written by the specified author")
     @GET
     @Path("/authors/{author}")
-    List<NewsDto> getByAuthor(@PathParam("author") String author);
+    List<NewsDto> getByAuthor(
+            @ApiParam("The id of the author who wrote the news")
+            @PathParam("author")
+            String author);
 
+
+    @ApiOperation("Get all the news from a given country written by a given author")
     @GET
     @Path("/countries/{country}/authors/{author}")
     List<NewsDto> getByCountryAndAuthor(
-            @PathParam("country") @Country String country,
-            @PathParam("author") String author);
+            @ApiParam("The country name")
+            @PathParam("country")
+            @Country String country,
+            //
+            @ApiParam("The id of the author who wrote the news")
+            @PathParam("author")
+            String author);
 
+
+    @ApiOperation("Create a news")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    Long createNews(NewsDto dto);
+    @ApiResponse(code = 200, message = "The id of newly created news")
+    Long createNews(
+            @ApiParam("Text of news, plus author id and country. Should not specify id or creation time")
+            NewsDto dto);
 
+
+
+    @ApiOperation("Get a single news specified by id")
     @GET
     @Path("/id/{id}")
-    NewsDto getById(@PathParam("id") Long id);
+    NewsDto getById(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+            Long id);
 
+
+    @ApiOperation("Update the content of an existing news")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    void update(NewsDto dto);
+    void update(
+            @ApiParam("Id and new text for the existing news")
+            NewsDto dto);
 
+
+
+    @ApiOperation("Update the content of an existing news")
+    @PUT
+    @Path("/id/{id}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    void update(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+            Long id,
+            //
+            @ApiParam("The new text which will replace the old one")
+            String text
+            );
+
+
+    @ApiOperation("Delete a news with the given id")
     @DELETE
     @Path("/id/{id}")
-    void delete(@PathParam("id") Long id);
+    void delete(
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+            Long id);
 }

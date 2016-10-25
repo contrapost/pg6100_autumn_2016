@@ -1,6 +1,7 @@
 package org.pg6100.rest.newsrest.api;
 
 import com.google.common.base.Throwables;
+import io.swagger.annotations.ApiParam;
 import org.pg6100.news.NewsEJB;
 import org.pg6100.news.constraint.CountryList;
 import org.pg6100.rest.newsrest.dto.NewsConverter;
@@ -85,8 +86,24 @@ public class NewsRestImpl implements NewsRestApi{
 
     @Override
     public void update(NewsDto dto) {
+        long id;
+        try{
+            id = Long.parseLong(dto.id);
+        } catch (Exception e){
+            throw new WebApplicationException("Invalid id: "+dto.id, 400);
+        }
+
+        update(id, dto.text);
+    }
+
+    @Override
+    public void update(Long id, String text) {
+        if(! ejb.isPresent(id)){
+            throw new WebApplicationException("Cannot find news with id: "+id, 404);
+        }
+
         try {
-            ejb.updateText(Long.parseLong(dto.id), dto.text);
+            ejb.updateText(id, text);
         } catch (Exception e){
             throw wrapException(e);
         }
