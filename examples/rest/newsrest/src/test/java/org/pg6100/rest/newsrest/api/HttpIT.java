@@ -67,10 +67,9 @@ public class HttpIT extends NewsRestTestBase {
 
         options().then()
                 .statusCode(200)
-                //Allow: HEAD, POST, GET, OPTIONS, PUT
+                //Allow: HEAD, POST, GET, OPTIONS
                 .header("Allow", containsString("GET"))
                 .header("Allow", containsString("POST"))
-                .header("Allow", containsString("PUT"))
                 //note: having GET, will get HEAD by default, ie do not need to implement it
                 .header("Allow", containsString("HEAD"))
                 // this should always be available by default, ie no need to activate/implement it
@@ -87,8 +86,7 @@ public class HttpIT extends NewsRestTestBase {
                 .header("Allow", containsString("GET")) //response should tell what is allowed
                 .header("Allow", containsString("POST"))
                 .header("Allow", containsString("HEAD"))
-                .header("Allow", containsString("OPTIONS"))
-                .header("Allow", containsString("PUT"));
+                .header("Allow", containsString("OPTIONS"));
     }
 
     @Test
@@ -168,5 +166,10 @@ public class HttpIT extends NewsRestTestBase {
                they do on the messages. It is off by default.
 
         CONNECT: used in encryption, ie SSL
+
+
+        There is also another verb called PATCH covered by rfc5789,
+        which is used to do partial updates by sending a set of "instructions"
+        on how to do such updates (which might not be idempotent)
      */
 }

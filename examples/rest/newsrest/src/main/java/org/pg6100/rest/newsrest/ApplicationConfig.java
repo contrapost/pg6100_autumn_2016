@@ -52,6 +52,8 @@ public class ApplicationConfig extends Application {
     c.add(io.swagger.jaxrs.listing.ApiListingResource.class);
     c.add(io.swagger.jaxrs.listing.SwaggerSerializers.class);
 
+    //needed to handle Java 8 dates
+    c.add(ObjectMapperContextResolver.class);
 
     classes = Collections.unmodifiableSet(c);
   }

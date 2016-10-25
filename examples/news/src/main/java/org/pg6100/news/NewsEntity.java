@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 public class NewsEntity {
@@ -26,8 +26,7 @@ public class NewsEntity {
     private String text;
 
     @NotNull //again, non-standard, ie need to use Hibernate, as Java 8 dates are not supported in JPA 2.1
-    //@Past // Can't use this type of constraint on LocalDateTime
-    private LocalDateTime creationTime;
+    private ZonedDateTime creationTime;
 
     @Country
     private String country;
@@ -59,11 +58,11 @@ public class NewsEntity {
         this.text = text;
     }
 
-    public LocalDateTime getCreationTime() {
+    public ZonedDateTime getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(LocalDateTime creationTime) {
+    public void setCreationTime(ZonedDateTime creationTime) {
         this.creationTime = creationTime;
     }
 

@@ -98,21 +98,43 @@ public interface NewsRestApi {
             @PathParam("id")
             Long id);
 
+        /*
+            PUT is idempotent (ie, applying 1 or 1000 times should end up in same result on the server).
+            However, it will replace the whole resource (News) in this case.
 
-    @ApiOperation("Update the content of an existing news")
+            In some cases, a PUT on an non-existing resource might create it.
+            This depends on the application.
+            Here, as the id is what automatically generate by Hibernate,
+            we will not allow it
+         */
+
+    @ApiOperation("Update an existing news")
     @PUT
+    @Path("/id/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     void update(
-            @ApiParam("Id and new text for the existing news")
+            @ApiParam(ID_PARAM)
+            @PathParam("id")
+            Long id,
+            //
+            @ApiParam("The news that will replace the old one. Cannot change its id though.")
             NewsDto dto);
 
 
+    /*
+        If we only want to update the text, using the method above can be inefficient, as we
+        have to send again the WHOLE news. Partial updates are wrong.
+        But, we can have a new resource specifying the content of the news,
+        which then would be allowed to update with a PUT.
 
-    @ApiOperation("Update the content of an existing news")
+        Another approach is to use PATCH, but likely on overkill here...
+     */
+
+    @ApiOperation("Update the text content of an existing news")
     @PUT
-    @Path("/id/{id}")
+    @Path("/id/{id}/text")
     @Consumes(MediaType.TEXT_PLAIN)
-    void update(
+    void updateText(
             @ApiParam(ID_PARAM)
             @PathParam("id")
             Long id,

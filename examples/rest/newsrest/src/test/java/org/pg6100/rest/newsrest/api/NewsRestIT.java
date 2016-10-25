@@ -1,18 +1,12 @@
 package org.pg6100.rest.newsrest.api;
 
-import com.google.gson.Gson;
-import io.restassured.RestAssured;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pg6100.rest.newsrest.dto.NewsDto;
-import org.pg6100.utils.web.JBossUtil;
 
-
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.not;
@@ -23,7 +17,7 @@ import static org.hamcrest.core.Is.is;
     Unless otherwise specified, you will have to write tests
     for REST APIs using RestAssured
  */
-public class NewsRestIT extends NewsRestTestBase{
+public class NewsRestIT extends NewsRestTestBase {
 
 
     @Test
@@ -83,7 +77,7 @@ public class NewsRestIT extends NewsRestTestBase{
 
 
     @Test
-    public void testUpdate() {
+    public void testUpdate() throws Exception {
 
         String text = "someText";
 
@@ -102,8 +96,9 @@ public class NewsRestIT extends NewsRestTestBase{
 
         //now change text with PUT
         given().contentType(ContentType.JSON)
-                .body(new NewsDto(id, null, updatedText, null, null))
-                .put()
+                .pathParam("id", id)
+                .body(new NewsDto(id, "foo", updatedText, "Norway", ZonedDateTime.now()))
+                .put("/id/{id}")
                 .then()
                 .statusCode(204);
 
@@ -111,13 +106,13 @@ public class NewsRestIT extends NewsRestTestBase{
         get("/id/" + id).then().body("text", is(updatedText));
 
 
-        //now rechange, but using different API
+        //now rechange, but just the text
         String anotherText = "yet another text";
 
         given().contentType(ContentType.TEXT)
                 .body(anotherText)
                 .pathParam("id", id)
-                .put("/id/{id}")
+                .put("/id/{id}/text")
                 .then()
                 .statusCode(204);
 
@@ -125,14 +120,25 @@ public class NewsRestIT extends NewsRestTestBase{
     }
 
     @Test
-    public void testMissingForUpdate(){
+    public void testMissingForUpdate() {
 
-        given().contentType(ContentType.TEXT)
-                .body("some text")
+        given().contentType(ContentType.JSON)
+                .body("{\"id\":-333}")
                 .pathParam("id", "-333")
                 .put("/id/{id}")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void testUpdateNonMatchingId() {
+
+        given().contentType(ContentType.JSON)
+                .body(new NewsDto("222", "foo", "some text", "Norway", ZonedDateTime.now()))
+                .pathParam("id", "-333")
+                .put("/id/{id}")
+                .then()
+                .statusCode(400);
     }
 
 
@@ -148,8 +154,9 @@ public class NewsRestIT extends NewsRestTestBase{
         String updatedText = "";
 
         given().contentType(ContentType.JSON)
+                .pathParam("id", id)
                 .body(new NewsDto(id, null, updatedText, null, null))
-                .put()
+                .put("/id/{id}")
                 .then()
                 .statusCode(400);
     }

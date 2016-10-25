@@ -18,8 +18,6 @@ import static org.hamcrest.core.Is.is;
 
 public class NewsRestTestBase {
 
-    private static final Gson gson = new Gson();
-
     @BeforeClass
     public static void initClass() {
         JBossUtil.waitForJBoss(10);
@@ -42,11 +40,10 @@ public class NewsRestTestBase {
            Here, we read each resource (GET), and then delete them
            one by one (DELETE)
          */
-        String body = given().accept(ContentType.JSON).get()
+        List<NewsDto> list = Arrays.asList(given().accept(ContentType.JSON).get()
                 .then()
                 .statusCode(200)
-                .extract().asString();
-        List<NewsDto> list = Arrays.asList(gson.fromJson(body, NewsDto[].class));
+                .extract().as(NewsDto[].class));
 
 
         /*

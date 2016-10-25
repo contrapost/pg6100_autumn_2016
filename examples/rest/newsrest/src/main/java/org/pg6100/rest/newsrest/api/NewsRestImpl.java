@@ -1,9 +1,7 @@
 package org.pg6100.rest.newsrest.api;
 
 import com.google.common.base.Throwables;
-import io.swagger.annotations.ApiParam;
 import org.pg6100.news.NewsEJB;
-import org.pg6100.news.constraint.CountryList;
 import org.pg6100.rest.newsrest.dto.NewsConverter;
 import org.pg6100.rest.newsrest.dto.NewsDto;
 
@@ -16,7 +14,7 @@ import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
 /*
-    The actual implementantion could be a EJB, eg if we want to handle
+    The actual implementation could be a EJB, eg if we want to handle
     transactions and dependency injections with @EJB.
  */
 @Stateless
@@ -85,7 +83,7 @@ public class NewsRestImpl implements NewsRestApi{
     }
 
     @Override
-    public void update(NewsDto dto) {
+    public void update(Long pathId, NewsDto dto) {
         long id;
         try{
             id = Long.parseLong(dto.id);
@@ -93,11 +91,23 @@ public class NewsRestImpl implements NewsRestApi{
             throw new WebApplicationException("Invalid id: "+dto.id, 400);
         }
 
-        update(id, dto.text);
+        if(id != pathId){
+            throw new WebApplicationException("Now allowed to change the id of the resource", 400);
+        }
+
+        if(! ejb.isPresent(id)){
+            throw new WebApplicationException("Not allowed to create a news with PUT, and cannot find news with id: "+id, 404);
+        }
+
+        try {
+            ejb.update(id, dto.text, dto.authorId, dto.country, dto.creationTime);
+        } catch (Exception e){
+            throw wrapException(e);
+        }
     }
 
     @Override
-    public void update(Long id, String text) {
+    public void updateText(Long id, String text) {
         if(! ejb.isPresent(id)){
             throw new WebApplicationException("Cannot find news with id: "+id, 404);
         }

@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.pg6100.news.constraint.Country;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /*
     A data transfer object (DTO) is what we will use to represent and (un)marshal
@@ -32,11 +32,11 @@ public class NewsDto {
     public String country;
 
     @ApiModelProperty("When the news was first created/published")
-    public LocalDateTime creationTime;
+    public ZonedDateTime creationTime;
 
     public NewsDto(){}
 
-    public NewsDto(String id, String authorId, String text, String country, LocalDateTime creationTime) {
+    public NewsDto(String id, String authorId, String text, String country, ZonedDateTime creationTime) {
         this.id = id;
         this.authorId = authorId;
         this.text = text;
