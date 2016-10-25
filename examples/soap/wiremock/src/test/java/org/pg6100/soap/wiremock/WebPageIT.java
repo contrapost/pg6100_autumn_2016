@@ -36,9 +36,10 @@ public class WebPageIT extends WebTestBase {
                 post(urlMatching("/v1/NASDAQQuotes.asmx"))
                         .withRequestBody(matching(".*ListMarketCenters.*"))
                 .willReturn(aResponse()
-                        .withHeader("Content-Type","text/xml; charset=utf-8")
+                        .withHeader("Content-Type","text/xml;charset=utf-8")
                         .withHeader("Content-Length",""+body.length())
-                        .withBody(body)));
+                        .withBody(body)
+                ));
     }
 
     @AfterClass
