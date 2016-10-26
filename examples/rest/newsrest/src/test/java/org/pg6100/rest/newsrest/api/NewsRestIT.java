@@ -138,7 +138,7 @@ public class NewsRestIT extends NewsRestTestBase {
                 .pathParam("id", "-333")
                 .put("/id/{id}")
                 .then()
-                .statusCode(400);
+                .statusCode(409);
     }
 
 

@@ -92,7 +92,8 @@ public class NewsRestImpl implements NewsRestApi{
         }
 
         if(id != pathId){
-            throw new WebApplicationException("Now allowed to change the id of the resource", 400);
+            // in this case, 409 (Conflict) sounds more appropriate than the generic 400
+            throw new WebApplicationException("Now allowed to change the id of the resource", 409);
         }
 
         if(! ejb.isPresent(id)){
