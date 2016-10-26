@@ -13,10 +13,18 @@ import java.util.Objects;
 public class HttpUtil {
 
     /**
+     Connect to given host:port via direct TCP socket, send the input string, and
+     return the result (if any) as a string
+     */
+    public static String executeHttpCommand(String host, int port, String request) throws Exception {
+        return executeHttpCommand(host, port, request, "UTF-8");
+    }
+
+    /**
         Connect to given host:port via direct TCP socket, send the input string, and
         return the result (if any) as a string
      */
-    public static String executeHttpCommand(String host, int port, String request) throws Exception {
+    public static String executeHttpCommand(String host, int port, String request, String charset) throws Exception {
         Objects.requireNonNull(host);
         Objects.requireNonNull(request);
 
@@ -25,7 +33,7 @@ public class HttpUtil {
             socket.shutdownOutput();
 
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
+                    new InputStreamReader(socket.getInputStream(), charset));
 
             String response = "";
             String line = in.readLine();

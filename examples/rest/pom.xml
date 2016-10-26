@@ -16,6 +16,7 @@
         <module>weather_client</module>
         <module>restweb</module>
         <module>newsrest</module>
+        <module>charset</module>
     </modules>
 
 
