@@ -17,6 +17,7 @@
         <module>restweb</module>
         <module>newsrest</module>
         <module>charset</module>
+        <module>patch</module>
     </modules>
 
 
