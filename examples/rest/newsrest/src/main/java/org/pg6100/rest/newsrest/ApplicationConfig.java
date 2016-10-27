@@ -35,7 +35,7 @@ public class ApplicationConfig extends Application {
     beanConfig.setVersion("0.0.1");
     beanConfig.setSchemes(new String[]{"http"});
     beanConfig.setHost("localhost:8080");
-    beanConfig.setBasePath("/newsrest");
+    beanConfig.setBasePath("/newsrest/api");
     beanConfig.setResourcePackage("org.pg6100.rest.newsrest");
 
     //AWFUL NAME: this "set" is the one does actually init Swagger...
