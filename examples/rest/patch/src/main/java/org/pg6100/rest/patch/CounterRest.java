@@ -53,7 +53,7 @@ public class CounterRest {
             A relative (ie not absolute) URI will resolve against the URI of the request, ie "/patch/api/counters".
             Note that the response here has no body.
          */
-        return Response.created(URI.create(""+dto.id)).build();
+        return Response.created(URI.create("counters/"+dto.id)).build();
     }
 
     @ApiOperation("Get all the existing counters")
@@ -90,8 +90,9 @@ public class CounterRest {
                        @ApiParam("The new state of the resource")
                        CounterDto dto) {
 
-        if (dto.id != id) {
-            throw new WebApplicationException("Cannot modify the counter id", 409);
+        if (! dto.id.equals(id)) {
+            throw new WebApplicationException(
+                    "Cannot modify the counter id from "+id+" to "+dto.id, 409);
         }
 
         if (dto.value == null) {
@@ -120,7 +121,7 @@ public class CounterRest {
 
         CounterDto dto = map.get(id);
         if (dto == null) {
-            throw new WebApplicationException("Cannot find counter with id " + dto.id, 404);
+            throw new WebApplicationException("Cannot find counter with id " + id, 404);
         }
 
         int delta;

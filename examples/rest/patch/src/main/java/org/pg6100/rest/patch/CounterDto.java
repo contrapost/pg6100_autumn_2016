@@ -14,4 +14,12 @@ public class CounterDto {
 
     @ApiModelProperty("The unique id that identifies this counter resource")
     public Long id;
+
+    public CounterDto(){}
+
+    public CounterDto(Long id, String name, Integer value){
+        this.id = id;
+        this.name = name;
+        this.value = value;
+    }
 }
