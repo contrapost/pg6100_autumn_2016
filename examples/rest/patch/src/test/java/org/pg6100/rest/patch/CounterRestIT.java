@@ -107,6 +107,16 @@ public class CounterRestIT {
                 .statusCode(204);
     }
 
+    private void patchWithMergeJSon(long id, String jsonBody, int statusCode){
+        given().port(8080)
+                .baseUri("http://localhost")
+                .contentType("application/merge-patch+json")
+                .body(jsonBody)
+                .patch("/patch/api/counters/"+id)
+                .then()
+                .statusCode(statusCode);
+    }
+
     private void verifyEqual(CounterDto a, CounterDto b){
         assertEquals(a.id, b.id);
         assertEquals(a.name, b.name);
@@ -151,6 +161,72 @@ public class CounterRestIT {
 
         CounterDto readBack = get(dto.id);
         assertEquals(value + delta, (int) readBack.value);
+    }
+
+
+    @Test
+    public void testPatchMergeJSon(){
+
+        long id = System.currentTimeMillis();
+        int value = 55;
+        String name = "foo";
+
+        CounterDto dto = new CounterDto(id,name, value);
+        createNew(dto);
+
+        int modifiedValue = value * 3;
+
+        //delete the name, and change the value
+        patchWithMergeJSon(id, "{\"name\":null, \"value\":"+modifiedValue+"}", 204);
+
+        CounterDto readBack = get(dto.id);
+        assertEquals(modifiedValue, (int) readBack.value);
+        assertNull(readBack.name);
+        assertEquals(id, (long) readBack.id); // should had stayed the same
+    }
+
+    @Test
+    public void testPatchMergeJSonJustValue(){
+
+        long id = System.currentTimeMillis();
+        int value = 55;
+        String name = "foo";
+
+        CounterDto dto = new CounterDto(id,name, value);
+        createNew(dto);
+
+        int modifiedValue = value * 3;
+
+        //just change the value
+        patchWithMergeJSon(id, "{\"value\":"+modifiedValue+"}", 204);
+
+        CounterDto readBack = get(dto.id);
+        assertEquals(modifiedValue, (int) readBack.value);
+        assertEquals(name, readBack.name); //not modified
+        assertEquals(id, (long) readBack.id); // should had stayed the same
+    }
+
+    @Test
+    public void testPatchMergeJSonInvalidValue(){
+
+        long id = System.currentTimeMillis();
+        int value = 55;
+        String name = "foo";
+
+        CounterDto dto = new CounterDto(id,name, value);
+        createNew(dto);
+
+        int modifiedValue = value * 3;
+        String modifiedName = "modified from " + name;
+
+        //name is correct, but value is wrongly passed as string, not integer
+        patchWithMergeJSon(id, "{\"name\":\""+modifiedName+"\", \"value\":\""+modifiedValue+"\"}", 400);
+
+        CounterDto readBack = get(dto.id);
+        //nothing should had been modified, as value was invalid
+        assertEquals(value, (int) readBack.value);
+        assertEquals(name, readBack.name); //IMPORTANT that this did not change
+        assertEquals(id, (long) readBack.id);
     }
 
 }
