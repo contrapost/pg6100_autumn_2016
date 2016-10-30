@@ -49,6 +49,15 @@ public interface NewsRestApi {
     @GET
     List<NewsDto> get();
 
+
+    /*
+        NOTE: in the following, we use the URI path to
+        identify the subsets that we want, like "country"
+        and "author". This does work, but is NOT fully correct.
+        Later, we will go back on this point once we discuss
+        URI parameters.
+     */
+
     @ApiOperation("Get all the news in the specified country")
     @GET
     @Path("/countries/{country}")
