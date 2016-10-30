@@ -40,7 +40,7 @@ public class CounterRestIT {
         String baseURI="/patch/api/counters";
 
         String message = "POST "+baseURI+" HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Content-Type:application/json; charset="+charset+"\n";
         message += "Content-Length:"+size+"\n";
         message += "\n";

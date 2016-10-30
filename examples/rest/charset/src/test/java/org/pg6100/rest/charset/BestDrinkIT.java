@@ -20,7 +20,7 @@ public class BestDrinkIT {
     public void testGetTheBest() throws Exception {
 
         String message = "GET /charset/drinks/best HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Accept:text/plain\n";
         message += "\n";
 
@@ -35,7 +35,7 @@ public class BestDrinkIT {
     public void testGetTheBestInNorwegian() throws Exception {
 
         String message = "GET /charset/drinks/best HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Accept:text/plain\n";
         //for language codes, see http://www.w3schools.com/tags/ref_language_codes.asp
         message += "Accept-Language:no\n";
@@ -88,7 +88,7 @@ public class BestDrinkIT {
     public void testGetWithDifferentCharset() throws Exception{
 
         String message = "GET /charset/drinks/best HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Accept:text/plain;charset=ISO-8859-1\n";
         message += "Accept-Language:en\n";
         message += "\n";
@@ -108,7 +108,7 @@ public class BestDrinkIT {
     public void testGetCharsetProblemIso() throws Exception{
 
         String message = "GET /charset/drinks/best HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Accept:text/plain;charset=ISO-8859-1\n";
         message += "Accept-Language:no\n";
         message += "\n";
@@ -163,7 +163,7 @@ public class BestDrinkIT {
     public void testGetCharsetProblemUtf8() throws Exception{
 
         String message = "GET /charset/drinks/best HTTP/1.1\n";
-        message += "Host:localhost\n";
+        message += "Host:localhost:8080\n";
         message += "Accept:text/plain;charset=UTF-8\n";
         message += "Accept-Language:no\n";
         message += "\n";

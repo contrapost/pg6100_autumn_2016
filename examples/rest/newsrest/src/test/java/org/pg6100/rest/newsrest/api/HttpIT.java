@@ -121,7 +121,7 @@ public class HttpIT extends NewsRestTestBase {
          */
 
         String http = "FOO /newsrest/api/news HTTP/1.1\n";
-        http += "Host:localhost\n";
+        http += "Host:localhost:8080\n";
         http += "\n";
 
         String response = HttpUtil.executeHttpCommand("localhost", 8080, http);

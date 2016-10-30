@@ -53,7 +53,7 @@ public class CountryRestIT {
         // "verb" (GET in this case), followed by " ", then the path to resource, " ", and finally the protocol
         String request = "GET /newsrest/api/countries HTTP/1.1 \n";
         //headers are pairs <key>:<value>, where the key is case insensitive
-        request += "Host:localhost \n";  //this is compulsory: a server running at an IP can serve different host names
+        request += "Host:localhost:8080 \n";  //this is compulsory: a server running at an IP can serve different host names
         request += "Accept:application/json \n"; //we states that we want the resouce in Json format
         request += "\n"; //empty line indicates the end of the header section
 
