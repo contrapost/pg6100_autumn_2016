@@ -29,7 +29,7 @@ public class HttpUtil {
         Objects.requireNonNull(request);
 
         try (Socket socket = new Socket(host, port)) {
-            socket.getOutputStream().write(request.getBytes());
+            socket.getOutputStream().write(request.getBytes(charset));
             socket.shutdownOutput();
 
             BufferedReader in = new BufferedReader(
