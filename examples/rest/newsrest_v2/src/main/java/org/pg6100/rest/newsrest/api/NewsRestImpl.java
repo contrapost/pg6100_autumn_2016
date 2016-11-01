@@ -15,7 +15,6 @@ import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 import java.util.List;
 
 /*
@@ -24,7 +23,7 @@ import java.util.List;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) //avoid creating new transactions
-public class NewsRestImpl implements NewsRestApi{
+public class NewsRestImpl implements NewsRestApi {
 
     @EJB
     private NewsEJB ejb;
@@ -33,11 +32,11 @@ public class NewsRestImpl implements NewsRestApi{
     @Override
     public List<NewsDto> get(String country, String authorId) {
 
-        if(Strings.isNullOrEmpty(country) && Strings.isNullOrEmpty(authorId)){
+        if (Strings.isNullOrEmpty(country) && Strings.isNullOrEmpty(authorId)) {
             return NewsConverter.transform(ejb.getAll());
-        } else  if(! Strings.isNullOrEmpty(country) && ! Strings.isNullOrEmpty(authorId)){
+        } else if (!Strings.isNullOrEmpty(country) && !Strings.isNullOrEmpty(authorId)) {
             return NewsConverter.transform(ejb.getAllByCountryAndAuthor(country, authorId));
-        } else if(! Strings.isNullOrEmpty(country)){
+        } else if (!Strings.isNullOrEmpty(country)) {
             return NewsConverter.transform(ejb.getAllByCountry(country));
         } else {
             return NewsConverter.transform(ejb.getAllByAuthor(authorId));
@@ -47,17 +46,18 @@ public class NewsRestImpl implements NewsRestApi{
     @Override
     public Long createNews(NewsDto dto) {
 
-        if(dto.id != null){
+        if (!(Strings.isNullOrEmpty(dto.newsId)
+                && Strings.isNullOrEmpty(dto.id))) {
             throw new WebApplicationException("Cannot specify id for a newly generated news", 400);
         }
-        if(dto.creationTime != null){
+        if (dto.creationTime != null) {
             throw new WebApplicationException("Cannot specify creationTime for a newly generated news", 400);
         }
 
         Long id;
-        try{
+        try {
             id = ejb.createNews(dto.authorId, dto.text, dto.country);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw wrapException(e);
         }
 
@@ -73,24 +73,24 @@ public class NewsRestImpl implements NewsRestApi{
     @Override
     public void updateNews(Long id, NewsDto dto) {
         long dtoID;
-        try{
-            dtoID = Long.parseLong(dto.id);
-        } catch (Exception e){
-            throw new WebApplicationException("Invalid id: "+dto.id, 400);
+        try {
+            dtoID = Long.parseLong(getNewsId(dto));
+        } catch (Exception e) {
+            throw new WebApplicationException("Invalid id: " + getNewsId(dto), 400);
         }
 
-        if(dtoID != id){
+        if (dtoID != id) {
             // in this case, 409 (Conflict) sounds more appropriate than the generic 400
             throw new WebApplicationException("Not allowed to change the id of the resource", 409);
         }
 
-        if(! ejb.isPresent(dtoID)){
-            throw new WebApplicationException("Not allowed to create a news with PUT, and cannot find news with id: "+dtoID, 404);
+        if (!ejb.isPresent(dtoID)) {
+            throw new WebApplicationException("Not allowed to create a news with PUT, and cannot find news with id: " + dtoID, 404);
         }
 
         try {
             ejb.update(dtoID, dto.text, dto.authorId, dto.country, dto.creationTime);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw wrapException(e);
         }
     }
@@ -101,7 +101,7 @@ public class NewsRestImpl implements NewsRestApi{
 
         try {
             ejb.updateText(id, text);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw wrapException(e);
         }
     }
@@ -157,45 +157,60 @@ public class NewsRestImpl implements NewsRestApi{
     @Override
     public Response deprecatedGetById(Long id) {
         return Response.status(301)
-                .location(UriBuilder.fromUri("news/"+id).build())
+                .location(UriBuilder.fromUri("news/" + id).build())
                 .build();
     }
 
     @Override
     public Response deprecatedUpdate(Long id, NewsDto dto) {
         return Response.status(301)
-                .location(UriBuilder.fromUri("news/"+id).build())
+                .location(UriBuilder.fromUri("news/" + id).build())
                 .build();
     }
 
     @Override
     public Response deprecatedUpdateText(Long id, String text) {
         return Response.status(301)
-                .location(UriBuilder.fromUri("news/"+id+"/text").build())
+                .location(UriBuilder.fromUri("news/" + id + "/text").build())
                 .build();
     }
 
     @Override
     public Response deprecatedDelete(Long id) {
         return Response.status(301)
-                .location(UriBuilder.fromUri("news/"+id).build())
+                .location(UriBuilder.fromUri("news/" + id).build())
                 .build();
     }
 
 
     //----------------------------------------------------------
 
-    private void requireNewsExists(long id) throws WebApplicationException{
-        if(! ejb.isPresent(id)){
-            throw new WebApplicationException("Cannot find news with id: "+id, 404);
+    /**
+     * Code used to keep backward compatibility
+     *
+     * @param dto
+     * @return
+     */
+    private String getNewsId(NewsDto dto){
+
+        if(dto.newsId != null){
+            return dto.newsId;
+        } else {
+            return dto.id;
         }
     }
 
-    private WebApplicationException wrapException(Exception e) throws WebApplicationException{
+    private void requireNewsExists(long id) throws WebApplicationException {
+        if (!ejb.isPresent(id)) {
+            throw new WebApplicationException("Cannot find news with id: " + id, 404);
+        }
+    }
+
+    private WebApplicationException wrapException(Exception e) throws WebApplicationException {
 
         Throwable cause = Throwables.getRootCause(e);
-        if(cause instanceof ConstraintViolationException){
-            return new WebApplicationException("Invalid constraints on input: "+cause.getMessage(), 400);
+        if (cause instanceof ConstraintViolationException) {
+            return new WebApplicationException("Invalid constraints on input: " + cause.getMessage(), 400);
         } else {
             return new WebApplicationException("Internal error", 500);
         }

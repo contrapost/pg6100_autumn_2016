@@ -13,8 +13,8 @@ import java.util.List;
 @Api(value = "/news" , description = "Handling of creating and retrieving news")
 @Path("/news")
 @Produces({
-        "application/vnd.pg6100.news+json; charset=UTF-8; version=1", //custom Json with versioning
-        "application/json; charset=UTF-8" //old format
+        Formats.V1_NEWS_JSON, //custom Json with versioning
+        Formats.BASE_JSON //old format
 })
 public interface NewsRestApi {
 
@@ -25,7 +25,7 @@ public interface NewsRestApi {
     /*
         query parameters are in the form
 
-        ? <name>=<value>
+        ?<name>=<value>&<name>=<value>&...
 
         for example
 
@@ -47,11 +47,13 @@ public interface NewsRestApi {
 
     @ApiOperation("Create a news")
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({Formats.V1_NEWS_JSON, Formats.BASE_JSON})
+    @Produces(Formats.BASE_JSON)
     @ApiResponse(code = 200, message = "The id of newly created news")
     Long createNews(
             @ApiParam("Text of news, plus author id and country. Should not specify id or creation time")
                     NewsDto dto);
+
 
     @ApiOperation("Get a single news specified by id")
     @GET
