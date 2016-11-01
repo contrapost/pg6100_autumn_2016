@@ -19,6 +19,7 @@
         <module>charset</module>
         <module>patch</module>
         <module>redirect</module>
+        <module>newsrest_v2</module>
     </modules>
 
 
