@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>newssoap</artifactId>
+    <groupId>org.pg6100.soap</groupId>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>org.pg6100</groupId>
+        <artifactId>soap</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.pg6100</groupId>
+            <artifactId>news</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pg6100</groupId>
+            <artifactId>utils</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <configuration>
+                    <!-- Needed, otherwise you get weird error messages...  -->
+                    <vmArgs>
+                        <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                    </vmArgs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>Create WSDL</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>wsgen</goal>
+                        </goals>
+                        <configuration>
+                            <genWsdl>true</genWsdl>
+                            <verbose>true</verbose>
+                            <keep>true</keep>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Create client code from WSDL</id>
+                        <!-- This is after the process-classes phase -->
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <!--<goal>wsimport</goal>-->
+                            <goal>wsimport-test</goal>
+                        </goals>
+                        <configuration>
+                            <!-- FIXME -->
+                            <!--Stubs can be created either by wsdl URL (GlassFish need to be running with the WS deployed)-->
+                            <!--Or by wsdl files (these files are located under the wsdl directory)-->
+
+                            <!--              <wsdlUrls>
+                                            <wsdlUrl>http://localhost:8080/chapter14-service-1.0/CardValidatorService?wsdl</wsdlUrl>
+                                          </wsdlUrls>-->
+
+                            <wsdlDirectory>${basedir}/target/generated-sources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>NewsSoapImplService.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>org.pg6100.soap.client</packageName>
+                            <keep>true</keep>
+                            <!--<sourceDestDir>${project.build.directory}/generated-test-sources/wsimport</sourceDestDir>-->
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

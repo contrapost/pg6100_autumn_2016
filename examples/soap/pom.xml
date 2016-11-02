@@ -15,6 +15,7 @@
     <modules>
         <module>nasdaq_client</module>
         <module>wiremock</module>
+        <module>newssoap</module>
     </modules>
 
 
