@@ -109,7 +109,7 @@ public class NewsRestImpl implements NewsRestApi {
     @Override
     public void deleteNews(@ApiParam(ID_PARAM) Long id) {
         /*
-            Bit tricy: once a resource is deleted, if you try to
+            Bit tricky: once a resource is deleted, if you try to
             delete it a second time, then you would expect a 404,
             ie resource not found.
             However, DELETE is idempotent, which might be confusing
