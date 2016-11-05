@@ -18,8 +18,16 @@ import static org.hamcrest.core.Is.is;
    As we want to maintain backward compatibility, all of these tests
    should still pass without the need to do ANY modification.
 
-   Unfortunately, it looks like there is a limitation of RestAssured, which
-   does automated-redirects only for GET :(
+   Unfortunately, it looks like there is a limitation (ie bug) of RestAssured,
+   which does automated-redirects only for GET :(
+
+   So, what to do when an open-source project that you use does
+   have a bug? Well, you fill a bug report...
+
+    https://github.com/rest-assured/rest-assured/issues/750
+
+   and maybe one day, when you have some free time (such a
+   rare luxury) you can also provide a patch...
  */
 public class OldNewsRestIT extends NewsRestTestBase {
 
