@@ -116,10 +116,37 @@ public interface NewsRestApi {
         Increasing Y or Z should NOT break backward compatibility.
         Increasing X "might" break backward compatibility.
 
-        An approach for maintanability is to keep the old API, but
+        An approach for maintainability is to keep the old API, but
         then do automated permanent redirect (ie 301) to the new API.
         This only works if the new API is semantically equivalent
      */
+
+
+    /*
+        WHY are the following deprecated?
+        Reason is that they were not written "properly".
+        Consider the example of:
+
+        (1): /news/authors/{author}
+
+        vs
+
+        (2): /news?author={author}
+
+        A URI needs to represent a clear, hierarchical structure
+        of the resources. If "/news" represents the set of
+        all news, when what would "/news/authors" be?
+        The set of all authors that have written a news?
+        If that is the case, then the {author} path element
+        would apply to the /news/authors set and not the /news one.
+
+        If I want to get all the news for a given author, then I
+        am "filtering" a subset of elements from the /news resource.
+        In that case, it is better to use ?k=v parameters.
+
+        Same for /news/id/{id}: what resource would "/id/" represent?
+        The id of the set "/news"?
+      */
 
     @ApiOperation("Get all the news in the specified country")
     @ApiResponses({
