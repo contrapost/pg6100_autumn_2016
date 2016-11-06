@@ -66,6 +66,10 @@
                 <executions>
                     <execution>
                         <id>Create WSDL</id>
+                        <!--
+                            In this phase, we automatically generate
+                            the WSDL from the Java code.
+                        -->
                         <phase>process-classes</phase>
                         <goals>
                             <goal>wsgen</goal>
@@ -78,29 +82,38 @@
                     </execution>
                     <execution>
                         <id>Create client code from WSDL</id>
-                        <!-- This is after the process-classes phase -->
+                        <!--
+                            This is after the process-classes phase,
+                            in which we need to set the configuration
+                            for the tests.
+                          -->
                         <phase>generate-test-sources</phase>
                         <goals>
-                            <!--<goal>wsimport</goal>-->
                             <goal>wsimport-test</goal>
                         </goals>
                         <configuration>
-                            <!-- FIXME -->
-                            <!--Stubs can be created either by wsdl URL (GlassFish need to be running with the WS deployed)-->
-                            <!--Or by wsdl files (these files are located under the wsdl directory)-->
+                            <!--
+                              An actual client of the SOAP would have used the following.
+                              But as here we compile the tests BEFORE Wildfly is started,
+                              we cannot use it, as not available yet
 
-                            <!--              <wsdlUrls>
-                                            <wsdlUrl>http://localhost:8080/chapter14-service-1.0/CardValidatorService?wsdl</wsdlUrl>
-                                          </wsdlUrls>-->
+                              <wsdlUrls>
+                                  <wsdlUrl>http://localhost:8080/newssoap/NewsSoapImpl?wsdl</wsdlUrl>
+                              </wsdlUrls>
 
+                              so, we just configure the plugin to directly pick up the WSDL
+                              generated during the build of the SOAP web service.
+
+                              Note: this is still not enough to get everything working.
+                              But the next step has to be done directly in the tests,
+                              see NewsSoapApiIT.
+                              -->
                             <wsdlDirectory>${basedir}/target/generated-sources/wsdl</wsdlDirectory>
                             <wsdlFiles>
                                 <wsdlFile>NewsSoapImplService.wsdl</wsdlFile>
                             </wsdlFiles>
                             <packageName>org.pg6100.soap.client</packageName>
                             <keep>true</keep>
-                            <!--<sourceDestDir>${project.build.directory}/generated-test-sources/wsimport</sourceDestDir>-->
-
                         </configuration>
                     </execution>
                 </executions>

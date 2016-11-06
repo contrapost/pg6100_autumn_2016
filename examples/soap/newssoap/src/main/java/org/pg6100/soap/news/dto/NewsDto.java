@@ -7,6 +7,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/*
+    As using XML instead of JSon, have to use the
+    special XML tags to specify what and how fields
+    should be un/marshaled.
+ */
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NewsDto {

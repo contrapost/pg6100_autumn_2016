@@ -14,8 +14,20 @@ import javax.jws.WebService;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-/**
+/*
  * Created by arcuri82 on 11/2/2016.
+ *
+ * Actual implementation of SOAP web service.
+ * Marshalling to/from XML will be done automatically by
+ * Wildfly.
+ *
+ * Note: each SOAP message body will be enveloped in SOAP tags:
+ *
+ * <S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+ *      <S:Body>
+ *       ... the XML body
+ *      </S:Body>
+ *  </S:Envelope>
  */
 @WebService(
         endpointInterface = "org.pg6100.soap.news.api.NewsSoapApi"

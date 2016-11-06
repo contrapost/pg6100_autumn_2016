@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * Created by arcuri82 on 11/2/2016.
+ *
+ * Define the list of methods that will be remotely
+ * accessible through SOAP.
  */
 @WebService( name = "NewsSoap")
 public interface NewsSoapApi {
