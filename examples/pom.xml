@@ -15,6 +15,7 @@
         <module>rest</module>
         <module>utils</module>
         <module>news</module>
+        <module>dropwizard</module>
     </modules>
 
 
@@ -29,6 +30,7 @@
         <fs>${file.separator}</fs>
         <swagger-version>1.5.10</swagger-version>
         <jackson-version>2.7.4</jackson-version>
+        <dropwizard.version>1.0.3</dropwizard.version>
     </properties>
 
 
@@ -178,6 +180,20 @@
                 <version>${jackson-version}</version>
                 <scope>provided</scope>
             </dependency>
+
+
+            <!-- DropWizard -->
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-core</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-testing</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+
 
             <!-- Misc -->
             <dependency>
@@ -343,6 +359,20 @@
                     <groupId>org.jvnet.jax-ws-commons</groupId>
                     <artifactId>jaxws-maven-plugin</artifactId>
                     <version>2.3.1-b20150201.1248</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
             </plugins>
