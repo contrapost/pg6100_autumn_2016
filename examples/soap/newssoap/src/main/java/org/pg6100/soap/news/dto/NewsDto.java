@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class NewsDto {
 
     @XmlElement
-    public String newsId;
+    public Long newsId;
 
     @XmlElement
     public String authorId;
@@ -35,7 +35,7 @@ public class NewsDto {
     public NewsDto() {
     }
 
-    public NewsDto(String id, String authorId, String text, String country) {
+    public NewsDto(Long id, String authorId, String text, String country) {
         this.newsId = id;
         this.authorId = authorId;
         this.text = text;

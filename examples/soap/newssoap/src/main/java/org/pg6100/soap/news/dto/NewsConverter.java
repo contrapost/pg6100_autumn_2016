@@ -24,7 +24,7 @@ public class NewsConverter {
         Objects.requireNonNull(entity);
 
         NewsDto dto = new NewsDto();
-        dto.newsId = String.valueOf(entity.getId());
+        dto.newsId = entity.getId();
 
         dto.authorId = entity.getAuthorId();
         dto.text = entity.getText();

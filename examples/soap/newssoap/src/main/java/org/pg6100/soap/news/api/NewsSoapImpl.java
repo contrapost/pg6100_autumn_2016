@@ -2,6 +2,7 @@ package org.pg6100.soap.news.api;
 
 import com.google.common.base.Strings;
 import org.pg6100.news.NewsEJB;
+import org.pg6100.news.NewsEntity;
 import org.pg6100.soap.news.dto.NewsConverter;
 import org.pg6100.soap.news.dto.NewsDto;
 
@@ -10,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.jws.WebService;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -17,20 +19,18 @@ import java.util.List;
  */
 @WebService(
         endpointInterface = "org.pg6100.soap.news.api.NewsSoapApi"
-//        portName = "http://localhost:8080/newssoap",
-//        targetNamespace = "http://localhost:8080/newssoap",
-//        serviceName = "NewsSoap"
-
 )
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class NewsSoapImpl implements NewsSoapApi{
 
-    //each public method will exported by default
-
     @EJB
     private NewsEJB ejb;
 
+    /*
+        Note: here in these methods I could have added
+        more input validations...
+     */
 
     @Override
     public List<NewsDto> get(String country, String authorId) {
@@ -49,22 +49,33 @@ public class NewsSoapImpl implements NewsSoapApi{
     @Override
     public Long createNews(NewsDto dto) {
 
-//        if (!(Strings.isNullOrEmpty(dto.newsId)
-//                && Strings.isNullOrEmpty(dto.id))) {
-//            throw new WebApplicationException("Cannot specify id for a newly generated news", 400);
-//        }
-//        if (dto.creationTime != null) {
-//            throw new WebApplicationException("Cannot specify creationTime for a newly generated news", 400);
-//        }
-
-        Long id;
-        try {
-            id = ejb.createNews(dto.authorId, dto.text, dto.country);
-        } catch (Exception e) {
-            //throw wrapException(e);
-            throw e;
-        }
-
+        Long id = ejb.createNews(dto.authorId, dto.text, dto.country);
         return id;
     }
+
+
+    @Override
+    public NewsDto getNews(Long id) {
+
+        NewsEntity entity = ejb.get(id);
+        if(entity ==null){
+            return null;
+        }
+
+        return NewsConverter.transform(entity);
+    }
+
+    @Override
+    public void updateNews(NewsDto dto) {
+
+        ejb.update(dto.newsId,
+                dto.text, dto.authorId, dto.country, ZonedDateTime.now());
+    }
+
+
+    @Override
+    public boolean deleteNews(long id) {
+        return ejb.deleteNews(id);
+    }
+
 }

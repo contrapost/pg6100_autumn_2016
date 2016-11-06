@@ -1,6 +1,8 @@
 package org.pg6100.soap.news.api;
 
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pg6100.soap.client.*;
@@ -31,6 +33,13 @@ public class NewsSoapApiIT {
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
     }
 
+    @Before @After
+    public void cleanData(){
+
+        List<NewsDto> list = ws.get(null, null);
+
+//        list.stream().forEach(dto -> ws.deleteNews(dto.getNewsId()));
+    }
 
     @Test
     public void testCleanDB() {

@@ -14,4 +14,10 @@ public interface NewsSoapApi {
     List<NewsDto> get(String country, String authorId);
 
     Long createNews(NewsDto dto);
+
+    NewsDto getNews(Long id);
+
+    void updateNews(NewsDto dto);
+
+    boolean deleteNews(long id);
 }
