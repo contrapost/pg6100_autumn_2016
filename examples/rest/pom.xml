@@ -21,6 +21,7 @@
         <module>redirect</module>
         <module>newsrest_v2</module>
         <module>wiremockRest</module>
+        <module>wildflySwarmExample</module>
     </modules>
 
 

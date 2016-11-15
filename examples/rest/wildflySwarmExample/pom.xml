@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>wildflySwarmExample</artifactId>
+    <groupId>org.pg6100.rest</groupId>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>org.pg6100</groupId>
+        <artifactId>rest</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.pg6100</groupId>
+            <artifactId>utils</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <!--
+                    Ideally, we would use this plugin to generate
+                    a uberjar with all the needed Wildfly components.
+                    It works for simple cases, but, unfortunately, Swarm
+                    is not really so stable yet. For example, if you try
+                    to use it on "newsrest" you will end up with all kinds
+                    bugs and exceptions, with little/no documentation to
+                    debug it...
+                    so, something to keep in mind for the future, but not
+                    something we will use actively in this course
+                -->
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>wildfly-swarm-plugin</artifactId>
+                <configuration>
+                    <properties>
+                        <!--
+                            Swarm does not seem to handle jboss-web.xml,
+                            at least not directly. However, we can set here
+                            properties (eg the context path) that will end
+                            up in the uberjar
+                          -->
+                        <swarm.context.path>swarm</swarm.context.path>
+                    </properties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
