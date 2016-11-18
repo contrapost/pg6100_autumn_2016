@@ -15,6 +15,7 @@
     <modules>
         <module>dw_counter</module>
         <module>newsdw</module>
+        <module>hystrix</module>
     </modules>
 
 
