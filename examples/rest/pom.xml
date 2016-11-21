@@ -22,6 +22,7 @@
         <module>newsrest_v2</module>
         <module>wiremockRest</module>
         <module>wildflySwarmExample</module>
+        <module>pagination</module>
     </modules>
 
 
