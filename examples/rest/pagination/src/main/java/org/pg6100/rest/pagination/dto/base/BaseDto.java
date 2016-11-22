@@ -1,5 +1,7 @@
 package org.pg6100.rest.pagination.dto.base;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /*
     DTOs can extend each other.
     Only thing to keep in mind is that in Java you can
@@ -10,5 +12,6 @@ package org.pg6100.rest.pagination.dto.base;
  */
 public abstract class BaseDto {
 
+    @ApiModelProperty("The id of this resource")
     public Long id;
 }

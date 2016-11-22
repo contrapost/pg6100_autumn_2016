@@ -1,7 +1,12 @@
 package org.pg6100.rest.pagination;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.pg6100.rest.pagination.dto.base.CommentDto;
 import org.pg6100.rest.pagination.dto.base.NewsDto;
+import org.pg6100.rest.pagination.dto.base.VoteDto;
 import org.pg6100.rest.pagination.dto.collection.ListDto;
 import org.pg6100.rest.pagination.dto.hal.HalLink;
 import org.pg6100.rest.pagination.jee.NewsEJB;
@@ -18,7 +23,8 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Path("/")
+@Api(value = "/news", description = "Handling of creating and retrieving news")
+@Path("/news")
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class PaginationRest {
@@ -53,18 +59,22 @@ public class PaginationRest {
     private NewsEJB ejb;
 
 
+    @ApiOperation("Return a paginated list of current news")
     @GET
-    @Path("/news")
     @Produces(Format.HAL_V1)
     public ListDto<NewsDto> getNews(
+            @ApiParam("The country of the news")
             @QueryParam("country")
                     String country,
+            @ApiParam("Offset in the list of news")
             @QueryParam("offset")
             @DefaultValue("0")
                     Integer offset,
+            @ApiParam("Limit of news in a single retrieved page")
             @QueryParam("limit")
             @DefaultValue("10")
                     Integer limit,
+            @ApiParam("Whether to retrieve or not votes and comments for the given news")
             @QueryParam("expand")
             @DefaultValue("NONE")
                     Expand expand
@@ -182,14 +192,19 @@ public class PaginationRest {
         return dto;
     }
 
+    @ApiOperation("Delete the news specified by id")
     @DELETE
-    @Path("/news/{id}")
+    @Path("/{id}")
     public void deleteNews(@PathParam("id") Long newsId){
         ejb.deleteNews(newsId);
     }
 
+    /*
+        Note: here I could have "expand" as well as parameter
+     */
+    @ApiOperation("Retrieved the news specified by id, with all of its comments and votes")
     @GET
-    @Path("/news/{id}")
+    @Path("/{id}")
     @Produces(Format.JSON_V1)
     public NewsDto getNews(@PathParam("id") Long newsId){
         News news = ejb.getNews(newsId);
@@ -200,8 +215,8 @@ public class PaginationRest {
     }
 
 
+    @ApiOperation("Create a news with the given text for a given country")
     @POST
-    @Path("/news")
     @Consumes(Format.JSON_V1)
     public Response createNews(NewsDto dto) {
 
@@ -213,28 +228,30 @@ public class PaginationRest {
         ).build();
     }
 
+    @ApiOperation("Create a new vote for the given news identified by id")
     @POST
-    @Path("/news/{id}/votes")
+    @Path("/{id}/votes")
     @Consumes(Format.JSON_V1)
     public Response createVote(
             @PathParam("id")
                     Long newsId,
-            String user) {
+            VoteDto voteDto) {
 
-        ejb.createVote(newsId, user);
+        ejb.createVote(newsId, voteDto.user);
 
         return Response.status(201).build();
     }
 
+    @ApiOperation("Create a new comment for the given news identified by id")
     @POST
-    @Path("/news/{id}/comments")
+    @Path("/{id}/comments")
     @Consumes(Format.JSON_V1)
     public Response createComment(
             @PathParam("id")
                     Long newsId,
-            String text) {
+            CommentDto commentDto) {
 
-        ejb.createComment(newsId, text);
+        ejb.createComment(newsId, commentDto.text);
 
         return Response.status(201).build();
     }

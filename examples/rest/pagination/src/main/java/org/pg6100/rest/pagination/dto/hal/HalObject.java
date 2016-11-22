@@ -1,5 +1,7 @@
 package org.pg6100.rest.pagination.dto.hal;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /*
     HAL (Hypertext Application Language) is a proposal (not a standard, at least not yet...)
     to how to define links in JSON objects
@@ -13,5 +15,6 @@ package org.pg6100.rest.pagination.dto.hal;
  */
 public class HalObject {
 
+    @ApiModelProperty("HAL links")
     public HalLinkSet _links;
 }
