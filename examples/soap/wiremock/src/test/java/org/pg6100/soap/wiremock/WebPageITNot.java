@@ -16,7 +16,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-public class WebPageIT extends WebTestBase {
+public class WebPageITNot extends WebTestBase {
 
     private static WireMockServer server;
 
@@ -28,7 +28,7 @@ public class WebPageIT extends WebTestBase {
         );
         server.start();
 
-        String body = new Scanner(WebPageIT.class.getResourceAsStream("/body-v1-NASDAQQuotes.asmx.xml"), "UTF-8")
+        String body = new Scanner(WebPageITNot.class.getResourceAsStream("/body-v1-NASDAQQuotes.asmx.xml"), "UTF-8")
                 .useDelimiter("\\A") //matches the beginning of input
                 .next();
 
