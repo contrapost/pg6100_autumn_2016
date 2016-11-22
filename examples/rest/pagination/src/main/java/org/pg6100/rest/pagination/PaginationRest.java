@@ -11,7 +11,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.validation.constraints.Min;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -20,26 +19,33 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/")
-@Produces(Format.JSON_V1)
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class PaginationRest {
 
+    /*
+        As there is only a fixed number of values for "expand",
+        I am going to use an enumeration.
+     */
     public enum Expand {
         ALL,
         NONE,
         COMMENTS,
         VOTES;
 
-        public boolean withComments() {
+        public boolean isWithComments() {
             return this.equals(COMMENTS) || this.equals(ALL);
         }
 
-        public boolean withVotes() {
+        public boolean isWithVotes() {
             return this.equals(VOTES) || this.equals(ALL);
         }
     }
 
+    /*
+        Injected to get information about the URL of the running Wildfly.
+        This is needed to create full URL links to the different resources.
+     */
     @Context
     UriInfo uriInfo;
 
@@ -49,6 +55,7 @@ public class PaginationRest {
 
     @GET
     @Path("/news")
+    @Produces(Format.HAL_V1)
     public ListDto<NewsDto> getNews(
             @QueryParam("country")
                     String country,
@@ -71,7 +78,20 @@ public class PaginationRest {
             throw new WebApplicationException("Limit should be at least 1: "+limit, 400);
         }
 
+        /*
+            It is generally a really bad idea to read the whole database,
+            and even worse make it available from a REST API.
+            So, have a max number of entries that will be returned.
+
+            For example, when you search for projects on Github (and they
+            do also have REST APIs for it), there is a limit of 1000 results.
+         */
         int maxFromDb = 50;
+
+        /*
+            Based on the "expand" parameter, I will decide whether to load
+            or not the votes and comments from the database
+         */
 
         List<News> newsList;
         switch (expand) {
@@ -98,11 +118,29 @@ public class PaginationRest {
 
         /*
             Note: we could cache the results of the JPQL query.
-            TODO explanation
+            This is tricky:
+            - an internal cache would not work if the load balancer redirect following
+              requests to a different running instance
+            - caches are inefficient if most of the users will just read the first page
+            - if no cache, then there is no guarantee that the data has not been changed
+              meanwhile when asking for the "next" page
+            - could write the results of JPQL query to disk, but then very inefficient
+              if users ask only for one page (plus need to make sure to delete such query
+              results after a period of time)
+
+            There is no best solution: all have positive and negative sides.
+            When dealing with performance, you need to keep in mind the expected
+            usage of the API.
+            Here, to make it simple, we simply do not cache the query.
+            So, following a "next" link would result in a new database query.
          */
 
+        if(offset != 0 && offset >=  newsList.size()){
+            throw new WebApplicationException("Offset "+ offset + " out of bound "+newsList.size(), 400);
+        }
+
         ListDto<NewsDto> dto = DtoTransformer.transform(
-                newsList, offset, limit, expand.withComments(), expand.withVotes());
+                newsList, offset, limit, expand.isWithComments(), expand.isWithVotes());
 
         UriBuilder builder = uriInfo.getBaseUriBuilder()
                 .path("/news")
@@ -114,6 +152,10 @@ public class PaginationRest {
         }
 
         /*
+            Create URL links for "self", "next" and "previous" pages.
+            Each page will have up to "limit" NewsDto objects.
+            A page is identified by the offset in the list.
+
             Note: needs to clone the builder, as each call
             like "queryParam" does not create a new one, but
             rather update the existing one
@@ -137,9 +179,6 @@ public class PaginationRest {
             );
         }
 
-
-        //TODO fix Content-Range
-
         return dto;
     }
 
@@ -151,6 +190,7 @@ public class PaginationRest {
 
     @GET
     @Path("/news/{id}")
+    @Produces(Format.JSON_V1)
     public NewsDto getNews(@PathParam("id") Long newsId){
         News news = ejb.getNews(newsId);
         if(news == null){
@@ -198,6 +238,5 @@ public class PaginationRest {
 
         return Response.status(201).build();
     }
-
 
 }

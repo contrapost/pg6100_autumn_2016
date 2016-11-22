@@ -42,6 +42,11 @@ public class PaginationRestIT {
 
         int total = Integer.MAX_VALUE;
 
+        /*
+            as the REST API does not return the whole state of the database (even,
+            if I use an infinite "limit") I need to keep doing queries until the totalSize is 0
+         */
+
         while (total > 0) {
 
             //seems there are some limitations when handling generics
@@ -111,6 +116,9 @@ public class PaginationRestIT {
         return n;
     }
 
+    /**
+     * Extract the "text" fields from all the News
+     */
     private Set<String> getTexts(ListDto<?> selfDto) {
 
         Set<String> values = new HashSet<>();
@@ -187,6 +195,7 @@ public class PaginationRestIT {
 
         int counter = 0;
 
+        //read pages until there is still a "next" link
         while (next != null) {
 
             counter++;
@@ -233,6 +242,7 @@ public class PaginationRestIT {
 
         Set<String> first = getTexts(listDto);
 
+        //read next page
         ListDto<?> nextDto = given()
                 .get(listDto._links.next.href)
                 .then()
@@ -241,8 +251,15 @@ public class PaginationRestIT {
                 .as(ListDto.class);
 
         Set<String> next = getTexts(nextDto);
+        // check that an element of next page was not in the first page
         assertTrue(!first.contains(next.iterator().next()));
 
+        /*
+            The "previous" page of the "next" page should be the
+            first "self" page, ie
+
+            self.next.previous == self
+         */
         ListDto<?> previousDto = given()
                 .get(nextDto._links.previous.href)
                 .then()
@@ -321,7 +338,6 @@ public class PaginationRestIT {
 
     @Test
     public void testNegativeOffset(){
-        createSeveralNews(1);
 
         given().queryParam("offset", -1)
                 .get()
@@ -329,7 +345,57 @@ public class PaginationRestIT {
                 .statusCode(400);
     }
 
-    //TODO offset / limit
+    @Test
+    public void testInvalidOffset(){
 
-    //TODO context range
+        given().queryParam("offset", 0)
+                .get()
+                .then()
+                .statusCode(200);
+
+        given().queryParam("offset", 1)
+                .get()
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testInvalidLimit(){
+
+        given().queryParam("limit", 0)
+                .get()
+                .then()
+                .statusCode(400);
+    }
+
+
+    @Test
+    public void testInvalidExpand(){
+
+        /*
+            Slightly tricky: in the code we use "expand" as a Java
+            enumeration. But, in the URI request, it is just a string.
+            So what happens if the string does not match any valid value
+            in the enum? Technically, it should be a 4xx user error.
+            Wildfly decides to use 404, but other JAX-RS implementations
+            (ie RestEasy vs Jersey) "might" use a different code.
+         */
+
+        given().queryParam("expand", "foo")
+                .get()
+                .then()
+                .statusCode(404);
+
+
+        /*
+            however, what if you just use a param that does not exist?
+            it just gets ignored...
+            so the behavior is actually quite inconsistent
+         */
+
+        given().queryParam("bar", "foo")
+                .get()
+                .then()
+                .statusCode(200);
+    }
 }

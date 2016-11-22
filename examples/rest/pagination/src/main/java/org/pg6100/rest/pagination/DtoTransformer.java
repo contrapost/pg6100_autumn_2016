@@ -63,6 +63,10 @@ public class DtoTransformer {
     }
 
 
+    /**
+       This creates a HAL dto, but with the links (self, next, previous)
+       that still have to be set
+     */
     public static ListDto<NewsDto> transform(List<News> newsList,
                                              int offset,
                                              int limit,
@@ -71,7 +75,7 @@ public class DtoTransformer {
         List<NewsDto> dtoList = null;
         if(newsList != null){
             dtoList = newsList.stream()
-                    .skip(offset)
+                    .skip(offset) // this is a good example of how streams simplify coding
                     .limit(limit)
                     .map(n -> transform(n, withComments, withVotes))
                     .collect(Collectors.toList());

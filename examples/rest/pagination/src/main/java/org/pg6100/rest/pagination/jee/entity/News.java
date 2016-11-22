@@ -16,7 +16,13 @@ public class News {
     private String country;
 
     /*
-        TODO comment on Lazy
+        Here I do care about performance, as I will have options in the
+        REST endpoint to get News with/without votes and comments.
+        If I do need comments, I shouldn't read them from the database
+        in the first place.
+        This means having a LAZY fetch (which is the default).
+        Recall: in a bidirectional relationship, you have to use
+        "mappedBy" in the @OneToMany annotation.
      */
 
 

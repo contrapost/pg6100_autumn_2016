@@ -20,6 +20,7 @@ public class NewsEJB {
     public News getNews(long id){
         News news = em.find(News.class, id);
         if(news != null){
+            //force loading from DB of the LAZY lists
             news.getVotes().size();
             news.getComments().size();
         }
@@ -95,7 +96,7 @@ public class NewsEJB {
 
             If, on the other hand, this came as input to the method (
             eg among the "newsId" and "text") from a non-transactional
-            context, then I would need to use em.merger()
+            context, then I would need to use em.merge()
          */
         news.getComments().add(comment);
 
