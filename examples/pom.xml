@@ -16,6 +16,7 @@
         <module>utils</module>
         <module>news</module>
         <module>dropwizard</module>
+        <module>workshop</module>
     </modules>
 
 
