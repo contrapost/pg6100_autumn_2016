@@ -361,7 +361,7 @@
                             </users>
                         </add-user>
                         <java-opts>
-                            <!-- comment out if need to attach a remote debugger -->
+                            <!-- uncomment if need to attach a remote debugger -->
                             <!--<javaOpt>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005</javaOpt>-->
                         </java-opts>
                     </configuration>
