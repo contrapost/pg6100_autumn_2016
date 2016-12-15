@@ -10,7 +10,7 @@ import org.pg6100.rest.pagination.dto.hal.HalObject;
 import java.util.List;
 
 /*
-    A genetic DTO in HAL format to represent a list of DTOs,
+    A generic DTO in HAL format to represent a list of DTOs,
     with all needed links and pagination info
  */
 @ApiModel(description = "Paginated list of resources with HAL links ")
