@@ -17,6 +17,7 @@
         <module>news</module>
         <module>dropwizard</module>
         <module>workshop</module>
+        <module>exam</module>
     </modules>
 
 

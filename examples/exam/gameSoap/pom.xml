@@ -1,0 +1,133 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>gameSoap</artifactId>
+    <groupId>org.pg6100.exam</groupId>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>org.pg6100</groupId>
+        <artifactId>exam</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pg6100.exam</groupId>
+            <artifactId>quizApi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pg6100.exam</groupId>
+            <artifactId>gameCommands</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pg6100</groupId>
+            <artifactId>utils</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <add-user>
+                        <users>
+                            <user>
+                                <username>admin</username>
+                                <password>admin</password>
+                            </user>
+                        </users>
+                    </add-user>
+                    <java-opts>
+                        <java-opt>-DquizUrl=http://localhost:8099/quiz/api</java-opt>
+                        <java-opt>
+                             -javaagent:${settings.localRepository}${fs}org${fs}jacoco${fs}org.jacoco.agent${fs}${version.jacoco}${fs}org.jacoco.agent-${version.jacoco}-runtime.jar=destfile=${basedir}${fs}target${fs}jacoco-it.exec
+                        </java-opt>
+                    </java-opts>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <configuration>
+                    <vmArgs>
+                        <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                    </vmArgs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>Create WSDL</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>wsgen</goal>
+                        </goals>
+                        <configuration>
+                            <genWsdl>true</genWsdl>
+                            <verbose>true</verbose>
+                            <keep>true</keep>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Create client code from WSDL</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsimport-test</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlDirectory>${basedir}/target/generated-sources/wsdl</wsdlDirectory>
+                            <wsdlFiles>
+                                <wsdlFile>GameSoapImpService.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>org.pg6100.exam.gamesoap.client</packageName>
+                            <keep>true</keep>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>

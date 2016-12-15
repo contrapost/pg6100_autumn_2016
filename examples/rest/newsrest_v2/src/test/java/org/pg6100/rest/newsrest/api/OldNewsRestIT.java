@@ -26,7 +26,7 @@ import static org.hamcrest.core.Is.is;
 
     https://github.com/rest-assured/rest-assured/issues/750
 
-   and maybe one day, when you have some free time (such a
+   and maybe one day, when you have some free time (such  a
    rare luxury) you can also provide a patch...
  */
 public class OldNewsRestIT extends NewsRestTestBase {
